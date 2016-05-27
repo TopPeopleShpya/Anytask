@@ -1,5 +1,6 @@
 package com.company.anytask;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +88,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_main) {
 
         } else if (id == R.id.nav_courses) {
-
+            Intent intent = new Intent(this, TasksActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_deadlines) {
 
         } else if (id == R.id.nav_settings) {
