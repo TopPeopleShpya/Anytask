@@ -69,5 +69,11 @@ namespace Anytask.MockApi.Models
                     x.MapRightKey("CourseId");
                 });
         }
+
+        public System.Data.Entity.DbSet<Anytask.MockApi.Models.Organization> Organizations { get; set; }
+
+        public System.Data.Entity.DbSet<Anytask.MockApi.Models.Course> Courses { get; set; }
+
+        public System.Data.Entity.DbSet<Anytask.MockApi.Models.Task> Tasks { get; set; }
     }
 }
