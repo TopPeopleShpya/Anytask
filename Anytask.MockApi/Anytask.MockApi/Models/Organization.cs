@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
 
 namespace Anytask.MockApi.Models
 {
@@ -14,6 +15,7 @@ namespace Anytask.MockApi.Models
         public string Name { get; set; }
         //public ICollection<ApplicationUser> Teachers { get; set; }
         //public ICollection<ApplicationUser> Students { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Course> Courses { get; set; }
     }
 }

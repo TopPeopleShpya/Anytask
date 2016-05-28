@@ -12,9 +12,31 @@ using Anytask.MockApi.Models;
 
 namespace Anytask.MockApi.Controllers
 {
+    [RoutePrefix("api/Courses")]
     public class CoursesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        // GET: api/Courses?organizationId=1
+        public IQueryable<Course> GetCourses(int organizationId)
+        {
+            return GetCourses().Where(c => c.Organization.Id == organizationId);
+        }
+
+        // GET api/Courses/StudiedBy?userId=1
+        [Route("StudiedBy")]
+        public IQueryable<Course> GetCoursesStudiedBy(string userId)
+        {
+            return GetCourses().Where(c => c.Students.Any(s => s.Id == userId));
+        }
+
+        // GET api/Courses/TeachedBy?userId=1
+        [Route("TeachedBy")]
+        public IQueryable<Course> GetCoursesTeachedBy(string userId)
+        {
+            return GetCourses().Where(c => c.Teachers.Any(t => t.Id == userId));
+        }
+
 
         // GET: api/Courses
         public IQueryable<Course> GetCourses()
@@ -112,7 +134,7 @@ namespace Anytask.MockApi.Controllers
 
         private bool CourseExists(int id)
         {
-            return db.Courses.Count(e => e.Id == id) > 0;
+            return db.Courses.Any(e => e.Id == id);
         }
     }
 }

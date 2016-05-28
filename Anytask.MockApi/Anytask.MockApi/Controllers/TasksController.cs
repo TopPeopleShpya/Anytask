@@ -14,7 +14,13 @@ namespace Anytask.MockApi.Controllers
 {
     public class TasksController : ApiController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext db = ApplicationDbContext.Create();
+
+        // GET: api/Tasks/PerformedBy?userId=1
+        public IQueryable<Task> GeTasksPerformedBy(string userId)
+        {
+            return GetTasks().Where(t => t.Students.Any(s => s.Id == userId));
+        } 
 
         // GET: api/Tasks
         public IQueryable<Task> GetTasks()

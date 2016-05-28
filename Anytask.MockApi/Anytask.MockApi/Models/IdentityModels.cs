@@ -5,15 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using Newtonsoft.Json;
 
 namespace Anytask.MockApi.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-        public virtual ICollection<Score> Scores { get; set; } 
-        public virtual ICollection<Task> Tasks { get; set; } 
+        [JsonIgnore]
+        public virtual ICollection<Score> Scores { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Task> Tasks { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Course> TeachingCourses { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Course> StudyingCourses { get; set; } 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
@@ -75,5 +80,7 @@ namespace Anytask.MockApi.Models
         public System.Data.Entity.DbSet<Anytask.MockApi.Models.Course> Courses { get; set; }
 
         public System.Data.Entity.DbSet<Anytask.MockApi.Models.Task> Tasks { get; set; }
+
+        public System.Data.Entity.DbSet<Anytask.MockApi.Models.Score> Scores { get; set; }
     }
 }
