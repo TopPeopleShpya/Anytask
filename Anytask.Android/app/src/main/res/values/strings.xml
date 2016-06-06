@@ -11,4 +11,8 @@
     <string name="nav_settings">Настройки</string>
     <string name="nav_about">О программе</string>
     <string name="title_activity_tasks">TasksActivity</string>
+    <string name="anytask_about">AnyTask — платформа для взаимодействия преподавателей и студентов в процессе обучения.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
