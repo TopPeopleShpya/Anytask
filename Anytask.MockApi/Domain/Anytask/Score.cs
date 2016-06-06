@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Domain.Identity;
 using Newtonsoft.Json;
 
-namespace Anytask.MockApi.Models
+namespace Domain.Anytask
 {
     public class Score
     {

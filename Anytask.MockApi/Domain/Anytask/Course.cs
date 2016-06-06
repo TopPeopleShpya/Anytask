@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Web;
+using Domain.Identity;
 using Newtonsoft.Json;
 
-namespace Anytask.MockApi.Models
+namespace Domain.Anytask
 {
     public class Course
     {

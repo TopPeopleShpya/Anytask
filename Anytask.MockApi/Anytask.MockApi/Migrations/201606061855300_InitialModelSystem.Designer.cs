@@ -13,7 +13,7 @@ namespace Anytask.MockApi.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201605271532279_InitialModelSystem"; }
+            get { return "201606061855300_InitialModelSystem"; }
         }
         
         string IMigrationMetadata.Source

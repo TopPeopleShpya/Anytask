@@ -1,5 +1,6 @@
 using System.Web.Http;
 using System.Web.Mvc;
+using Anytask.MockApi.Areas.HelpPage.App_Start;
 
 namespace Anytask.MockApi.Areas.HelpPage
 {

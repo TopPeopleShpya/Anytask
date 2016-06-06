@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anytask.MockApi", "Anytask.MockApi\Anytask.MockApi.csproj", "{E7A959B5-AE1C-4B74-AE1A-5021E0B9A947}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anytask.MockApi", "Anytask.MockApi\Anytask.MockApi.csproj", "{6B0863D1-0AA0-4ECA-B482-89476749EE15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{0318FF45-51F1-4672-AE8A-97B6EE8DBC05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E7A959B5-AE1C-4B74-AE1A-5021E0B9A947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7A959B5-AE1C-4B74-AE1A-5021E0B9A947}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7A959B5-AE1C-4B74-AE1A-5021E0B9A947}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7A959B5-AE1C-4B74-AE1A-5021E0B9A947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B0863D1-0AA0-4ECA-B482-89476749EE15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B0863D1-0AA0-4ECA-B482-89476749EE15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B0863D1-0AA0-4ECA-B482-89476749EE15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B0863D1-0AA0-4ECA-B482-89476749EE15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0318FF45-51F1-4672-AE8A-97B6EE8DBC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0318FF45-51F1-4672-AE8A-97B6EE8DBC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0318FF45-51F1-4672-AE8A-97B6EE8DBC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0318FF45-51F1-4672-AE8A-97B6EE8DBC05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

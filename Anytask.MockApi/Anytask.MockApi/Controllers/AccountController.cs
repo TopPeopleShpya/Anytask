@@ -6,16 +6,16 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.ModelBinding;
+using Anytask.MockApi.Providers;
+using Anytask.MockApi.Results;
+using Domain.Account;
+using Domain.Identity;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using Anytask.MockApi.Models;
-using Anytask.MockApi.Providers;
-using Anytask.MockApi.Results;
 
 namespace Anytask.MockApi.Controllers
 {
@@ -62,7 +62,7 @@ namespace Anytask.MockApi.Controllers
             {
                 Email = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin?.LoginProvider
+                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
             };
         }
 
@@ -101,7 +101,7 @@ namespace Anytask.MockApi.Controllers
                 logins.Add(new UserLoginInfoViewModel
                 {
                     LoginProvider = LocalLoginProvider,
-                    ProviderKey = user.UserName,
+                    ProviderKey = user.UserName
                 });
             }
 
@@ -307,8 +307,7 @@ namespace Anytask.MockApi.Controllers
                         provider = description.AuthenticationType,
                         response_type = "token",
                         client_id = Startup.PublicClientId,
-                        redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
-                        state = state
+                        redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri, state
                     }),
                     State = state
                 };
@@ -328,7 +327,7 @@ namespace Anytask.MockApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
@@ -357,7 +356,7 @@ namespace Anytask.MockApi.Controllers
                 return InternalServerError();
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user);
             if (!result.Succeeded)

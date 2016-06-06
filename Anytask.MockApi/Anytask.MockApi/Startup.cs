@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Anytask.MockApi;
 using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(Anytask.MockApi.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace Anytask.MockApi
 {

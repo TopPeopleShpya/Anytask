@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Anytask.MockApi.Models
+namespace Domain.Account
 {
     // Models returned by AccountController actions.
 
