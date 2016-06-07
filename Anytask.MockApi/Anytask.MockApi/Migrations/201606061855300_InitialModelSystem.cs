@@ -1,6 +1,5 @@
 namespace Anytask.MockApi.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class InitialModelSystem : DbMigration

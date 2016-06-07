@@ -49,5 +49,10 @@ namespace Anytask.MockApi.Database
                     x.MapRightKey("CourseId");
                 });
         }
+
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Score> Scores { get; set; }
     }
 }
