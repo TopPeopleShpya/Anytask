@@ -1,8 +1,8 @@
 package com.company.anytask;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,13 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,17 +21,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ListView ul = (ListView) findViewById(R.id.school_list);
-        ul.setAdapter(new ArrayAdapter<>(this,
-            R.layout.list_item_school,
-            R.id.list_item_school_textview,
-            new ArrayList<>(Arrays.asList(
-                "Высшая Школа Экономики",
-                "Московский Физико-Технический Институт",
-                "Школа Анализа Данных",
-                "Школа Программирования Яндекса"
-            ))
-        ));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, new MainFragment())
+                .commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -80,16 +65,15 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Fragment fragment = null;
+        Class fragmentClass;
+        fragmentClass = TasksFragment.class;
 
         if (id == R.id.nav_main) {
-            // Handle the camera action
-        } else if (id == R.id.nav_main) {
-
+            fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_courses) {
-            Intent intent = new Intent(this, TasksActivity.class);
-            startActivity(intent);
+
         } else if (id == R.id.nav_deadlines) {
 
         } else if (id == R.id.nav_settings) {
@@ -97,6 +81,16 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_about) {
 
         }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
