@@ -1,6 +1,7 @@
 package com.company.anytask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -210,8 +211,15 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         return taleRowForTableD;
     }
 
-    private TextView bodyTextView(CellItem item){
+    private TextView bodyTextView(final CellItem item){
         TextView bodyTextView = new TextView(this.context);
+        bodyTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, CommentActivity.class).putExtra(Intent.EXTRA_TEXT, item.text);
+                context.startActivity(intent);
+            }
+        });
         bodyTextView.setBackgroundColor(Color.WHITE);
         bodyTextView.setText(item.text);
         bodyTextView.setGravity(Gravity.CENTER);
