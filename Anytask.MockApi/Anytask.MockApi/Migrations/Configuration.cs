@@ -8,6 +8,11 @@ namespace Anytask.MockApi.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+
+            // register mysql code generator
+            SetSqlGenerator("MySql.Data.MySqlClient", new MySql.Data.Entity.MySqlMigrationSqlGenerator());
+            CodeGenerator = new MySql.Data.Entity.MySqlMigrationCodeGenerator();
+            SetHistoryContextFactory("MySql.Data.MySqlClient", (conn, schema) => new MySqlHistoryContext(conn, schema));
         }
 
         protected override void Seed(ApplicationDbContext context)

@@ -10,12 +10,14 @@ namespace Anytask.MockApi.Database
         public ApplicationDbContext()
             : base("DefaultConnection", false)
         {
+            System.Data.Entity.Database.SetInitializer(new MySqlInitializer());
         }
-        
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
