@@ -10,6 +10,7 @@ using Domain.Anytask;
 
 namespace Anytask.MockApi.Controllers
 {
+    [RoutePrefix("api")]
     public class ScoresController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();

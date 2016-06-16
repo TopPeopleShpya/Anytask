@@ -10,12 +10,13 @@ using Domain.Anytask;
 
 namespace Anytask.MockApi.Controllers
 {
+    [RoutePrefix("api")]
     public class CoursesController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Organizations/{id}/Courses
-        [Route("Organizations/{id}/Courses")]
+        [Route("Organizations/{id:int}/Courses")]
         [ResponseType(typeof(IQueryable<Course>))]
         public async Task<IHttpActionResult> GetOrganizationCourses(int id)
         {
@@ -26,7 +27,7 @@ namespace Anytask.MockApi.Controllers
         } 
 
         // GET: api/Users/{id}/StudyingCourses
-        [Route("Users/{id}/StudyingCourses")]
+        [Route("Users/{id:int}/StudyingCourses")]
         [ResponseType(typeof(IQueryable<Course>))]
         public async Task<IHttpActionResult> GetCoursesStudyingByUser(string id)
         {

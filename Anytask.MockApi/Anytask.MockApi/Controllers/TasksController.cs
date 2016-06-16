@@ -10,6 +10,7 @@ using Task = Domain.Anytask.Task;
 
 namespace Anytask.MockApi.Controllers
 {
+    [RoutePrefix("api")]
     public class TasksController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
