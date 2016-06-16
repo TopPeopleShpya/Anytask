@@ -40,7 +40,7 @@ namespace Anytask.MockApi.Controllers
         // GET: api/Courses
         public IQueryable<Course> GetCourses()
         {
-            return db.Courses.Include(c => c.Organization);
+            return db.Courses;
         }
 
         // GET: api/Courses/5
