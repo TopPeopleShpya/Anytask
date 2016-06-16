@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -14,9 +15,17 @@ namespace Anytask.MockApi.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Organizations
-        public IQueryable<Organization> GetOrganizations()
+        [ResponseType(typeof(IQueryable<Organization>))]
+        public IHttpActionResult GetOrganizations()
         {
-            return db.Organizations;
+            try
+            {
+                return Ok(db.Organizations);
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
         }
 
         // GET: api/Organizations/5
