@@ -4,8 +4,11 @@ import android.util.Log;
 import com.company.anytask.Config;
 import com.company.anytask.R;
 import com.company.anytask.api.interfaces.IOrganizationsApi;
+import com.company.anytask.models.Course;
 import com.company.anytask.models.Organization;
 import com.google.gson.Gson;
+import com.google.gson.internal.Excluder;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,25 +36,13 @@ public class OrganizationsApi implements IOrganizationsApi {
         url = Config.API_URL + SUFFIX;
     }
 
-    @Override
-    public Collection<Organization> getOrganizations() {
-        //
-        //Request request = new Request.Builder()
-        //        .url(url)
-        //        .build();
-        //try {
-        //    Response response = client.newCall(request).execute();
-        //    return Arrays.asList(gson.fromJson(response.body().charStream(), Organization[].class));
-        //} catch (IOException e) {
-        //    Log.e(TAG, "getOrganizations: ", e);
-        //}
-        //return null;
+    private String getJsonString(String url) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
 
         try {
-            URL url = new URL(this.url);
-            connection = (HttpURLConnection) url.openConnection();
+            URL u = new URL(url);
+            connection = (HttpURLConnection) u.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
 
@@ -66,7 +57,7 @@ public class OrganizationsApi implements IOrganizationsApi {
             while ((line = reader.readLine()) != null)
                 buffer.append(line).append("\n");
 
-            return Arrays.asList(gson.fromJson(buffer.toString(), Organization[].class));
+            return buffer.toString();
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         } finally {
@@ -84,7 +75,21 @@ public class OrganizationsApi implements IOrganizationsApi {
     }
 
     @Override
+    public Collection<Organization> getOrganizations() {
+        return Arrays.asList(gson.fromJson(getJsonString(url), Organization[].class));
+    }
+
+    @Override
     public Organization getOrganization(int id) {
+        try {
+            Organization org = gson.fromJson(getJsonString(url + id), Organization.class);
+            Course[] courses = gson.fromJson(getJsonString(url + id + "/courses"), Course[].class);
+            org.courses = Arrays.asList(courses);
+
+            return org;
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
         return null;
     }
 }

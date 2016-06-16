@@ -2,7 +2,9 @@ package com.company.anytask;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,42 +18,39 @@ import java.util.*;
 
 public class MainFragment extends Fragment {
     private ArrayAdapter<String> adapter;
+    private List<String> schools;
     private ListView schoolList;
-    public class FetchDataTask<T> extends AsyncTask<String, Void, Collection<Organization>> {
-        private Class clazz;
 
-        public FetchDataTask() {}
-
-        public FetchDataTask(Class clazz) {
-
-            this.clazz = clazz;
-        }
+    public class FetchDataTask extends AsyncTask<String, Void, Collection<Organization>> {
         @Override
         protected Collection<Organization> doInBackground(String... params) {
             return new OrganizationsApi().getOrganizations();
         }
 
         @Override
-        protected void onPostExecute(Collection<Organization> organizations) {
+        protected void onPostExecute(final Collection<Organization> organizations) {
+            final Organization[] orgs = (Organization[]) organizations.toArray();
             final List<String> schools = new ArrayList<>();
             for (Organization organization : organizations) {
                 schools.add(organization.name);
             }
+
             adapter.clear();
             adapter.addAll(schools);
 
             schoolList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String schoolName = schools.get(position);
+                    int schoolId = orgs[position].id;
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, new SchoolFragment(schoolName))
+                            .replace(R.id.content_frame, SchoolFragment.newInstance(schoolId))
                             .addToBackStack(null)
                             .commit();
                 }
             });
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -64,7 +63,7 @@ public class MainFragment extends Fragment {
                 new ArrayList<String>()
         );
         schoolList.setAdapter(adapter);
-        new FetchDataTask<>().execute();
+        new FetchDataTask().execute();
         return rootView;
     }
 }
