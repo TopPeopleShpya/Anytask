@@ -31,23 +31,41 @@ namespace Anytask.MockApi.Controllers
         [ResponseType(typeof(IQueryable<Course>))]
         public async Task<IHttpActionResult> GetCoursesStudyingByUser(string id)
         {
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var user = await db.Users
+                .Include(u => u.StudyingCourses.Select(c => c.Organization))
+                .FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
                 return NotFound();
             return Ok(user.StudyingCourses);
-        } 
+        }
+
+        // GET: api/Users/{id}/TeachingCourses
+        [Route("Users/{id:int}/TeachingCourses")]
+        [ResponseType(typeof(IQueryable<Course>))]
+        public async Task<IHttpActionResult> GetCoursesTeachedByUser(string id)
+        {
+            var user = await db.Users
+                .Include(u => u.TeachingCourses.Select(c => c.Organization))
+                .FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+            return Ok(user.TeachingCourses);
+        }
 
         // GET: api/Courses
         public IQueryable<Course> GetCourses()
         {
-            return db.Courses;
+            return db.Courses
+                .Include(c => c.Organization);
         }
 
         // GET: api/Courses/5
         [ResponseType(typeof(Course))]
-        public IHttpActionResult GetCourse(int id)
+        public async Task<IHttpActionResult> GetCourse(int id)
         {
-            Course course = db.Courses.Find(id);
+            Course course = await db.Courses
+                .Include(c => c.Organization)
+                .FirstOrDefaultAsync(c => c.Id == id);
             if (course == null)
             {
                 return NotFound();

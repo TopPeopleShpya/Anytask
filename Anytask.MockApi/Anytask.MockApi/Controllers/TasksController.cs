@@ -20,7 +20,9 @@ namespace Anytask.MockApi.Controllers
         [ResponseType(typeof(IQueryable<Task>))]
         public async Task<IHttpActionResult> GetCourseTasks(int id)
         {
-            var course = await db.Courses.FirstOrDefaultAsync(c => c.Id == id);
+            var course = await db.Courses
+                .Include(c => c.Organization)
+                .FirstOrDefaultAsync(c => c.Id == id);
             if (course == null)
                 return NotFound();
             return Ok(course.Tasks);
@@ -31,7 +33,10 @@ namespace Anytask.MockApi.Controllers
         [ResponseType(typeof(IQueryable<Task>))]
         public async Task<IHttpActionResult> GetUserTasks(string id)
         {
-            var user = await db.Users.FirstOrDefaultAsync(c => c.Id == id);
+            var user = await db.Users
+                .Include(u => u.Tasks.Select(t => t.Course))
+                .Include(u => u.Tasks.Select(t => t.Course.Organization))
+                .FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
                 return NotFound();
             return Ok(user.Tasks);
@@ -40,14 +45,19 @@ namespace Anytask.MockApi.Controllers
         // GET: api/Tasks
         public IQueryable<Task> GetTasks()
         {
-            return db.Tasks;
+            return db.Tasks
+                .Include(t => t.Course)
+                .Include(t => t.Course.Organization);
         }
 
         // GET: api/Tasks/5
         [ResponseType(typeof(Task))]
         public IHttpActionResult GetTask(int id)
         {
-            Task task = db.Tasks.Find(id);
+            Task task = db.Tasks
+                .Include(t => t.Course)
+                .Include(t => t.Course.Organization)
+                .FirstOrDefault(t => t.Id == id);
             if (task == null)
             {
                 return NotFound();
