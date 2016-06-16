@@ -2,6 +2,7 @@
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -20,10 +21,15 @@ namespace Anytask.MockApi.Controllers
         [ResponseType(typeof(IQueryable<Score>))]
         public async Task<IHttpActionResult> GetTaskScores(int id)
         {
-            var task = await db.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+            var task = await db.Tasks
+                .Include(u => u.Scores.Select(s => s.Student))
+                .Include(t => t.Course)
+                .Include(t => t.Course.Organization)
+                .FirstOrDefaultAsync(t => t.Id == id);
             if (task == null)
                 return NotFound();
-            return Ok(task.Scores);
+            return Ok(task.Scores
+                .Select(GetScoreWithSimplifiedStudentProperty));
         }
 
         // GET: api/Users/{id}/Scores
@@ -31,39 +37,44 @@ namespace Anytask.MockApi.Controllers
         [ResponseType(typeof(IQueryable<Score>))]
         public async Task<IHttpActionResult> GetUserScores(string id)
         {
-            var user = await db.Users.FirstOrDefaultAsync(t => t.Id == id);
+            var user = await db.Users
+                .Include(u => u.Scores.Select(s => s.Task))
+                .Include(u => u.Scores.Select(s => s.Task.Course))
+                .Include(u => u.Scores.Select(s => s.Task.Course.Organization))
+                .FirstOrDefaultAsync(t => t.Id == id);
             if (user == null)
                 return NotFound();
-            return Ok(user.Scores);
+            return Ok(user.Scores
+                .Select(GetScoreWithSimplifiedStudentProperty));
         }
-
-        // GET: api/Scores
-        public IQueryable<Score> GetScores()
-        {
-            return db.Scores;
-        }
-
-        // GET: api/Scores/5
-        [ResponseType(typeof(Score))]
-        public IHttpActionResult GetScore(int id)
-        {
-            Score score = db.Scores.Find(id);
-            if (score == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(score);
-        }
-
+        
         // GET: api/Scores?taskId={taskId}&userId={userId}
-        [ResponseType(typeof(Score))]
         public async Task<IHttpActionResult> GetSpecificScore(int taskId, string userId)
         {
-            var score = await db.Scores.FirstOrDefaultAsync(s => s.Task.Id == taskId && s.Student.Id == userId);
+            var score = await db.Scores
+                .Include(s => s.Task)
+                .Include(s => s.Task.Course)
+                .Include(s => s.Task.Course.Organization)
+                .Include(s => s.Student)
+                .FirstOrDefaultAsync(s => s.Task.Id == taskId && s.Student.Id == userId);
             if (score == null)
                 return NotFound();
-            return Ok(score);
+            return Ok(GetScoreWithSimplifiedStudentProperty(score));
+        }
+
+        private static object GetScoreWithSimplifiedStudentProperty(Score score)
+        {
+            return new
+            {
+                score.Id,
+                score.Value,
+                score.Task,
+                Student = new
+                {
+                    score.Student.Id,
+                    score.Student.UserName
+                }
+            };
         }
 
         // PUT: api/Scores/5
