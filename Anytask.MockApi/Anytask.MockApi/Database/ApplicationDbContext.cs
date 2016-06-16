@@ -10,8 +10,12 @@ namespace Anytask.MockApi.Database
         public ApplicationDbContext()
             : base("DefaultConnection", false)
         {
-            System.Data.Entity.Database.SetInitializer(new MySqlInitializer());
             Configuration.LazyLoadingEnabled = false;
+            System.Data.Entity.Database.SetInitializer(new MySqlInitializer());
+            Organizations.Load();
+            Courses.Load();
+            Scores.Load();
+            Tasks.Load();
         }
 
         public static ApplicationDbContext Create()
