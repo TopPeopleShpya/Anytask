@@ -15,6 +15,7 @@ import com.company.anytask.R;
 import com.company.anytask.SchoolFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Organization;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,12 @@ public class FillOrganizationsTask extends AsyncTask<Void, Void, List<Organizati
     private SwipeRefreshLayout rootView;
 
     public FillOrganizationsTask(MainFragment fragment, FragmentManager fragmentManager, AnytaskApiClient api,
-                                 Context context, SwipeRefreshLayout rootView) {
+                                 SwipeRefreshLayout rootView) {
         this.fragment = fragment;
 
         this.fragmentManager = fragmentManager;
         this.api = api;
-        this.context = context;
+        this.context = fragment.getContext();
         this.rootView = rootView;
     }
 
@@ -47,7 +48,7 @@ public class FillOrganizationsTask extends AsyncTask<Void, Void, List<Organizati
     @Override
     protected void onPostExecute(final List<Organization> organizations) {
         if (organizations == null) {
-            new FillOrganizationsTask(fragment, fragmentManager, api, context, rootView).execute();
+            new FillOrganizationsTask(fragment, fragmentManager, api, rootView).execute();
             return;
         }
 
@@ -72,11 +73,9 @@ public class FillOrganizationsTask extends AsyncTask<Void, Void, List<Organizati
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Organization organization = organizations.get(position);
-                String organizationName = organization.name;
                 SchoolFragment schoolFragment = new SchoolFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString(context.getString(R.string.bundle_organization_name), organizationName);
-                bundle.putInt(context.getString(R.string.bundle_organization_id), organization.id);
+                bundle.putString(context.getString(R.string.bundle_organization), new Gson().toJson(organization));
                 schoolFragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, schoolFragment)

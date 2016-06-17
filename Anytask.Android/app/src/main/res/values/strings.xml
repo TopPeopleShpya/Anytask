@@ -18,4 +18,8 @@
     <string name="title_activity_comment">CommentActivity</string>
     <string name="bundle_organization_name">name</string>
     <string name="bundle_organization_id">organization_id</string>
+    <string name="bundle_course_id">course_id</string>
+    <string name="bundle_course_name">course_name</string>
+    <string name="bundle_course">course</string>
+    <string name="bundle_organization">organization</string>
 </resources>

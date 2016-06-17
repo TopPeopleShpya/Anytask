@@ -1,6 +1,8 @@
 package com.company.anytask.api.android.tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,44 +15,43 @@ import com.company.anytask.SchoolFragment;
 import com.company.anytask.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Course;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, Collection<Course>> {
+public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, List<Course>> {
     private SchoolFragment fragment;
     private FragmentManager fragmentManager;
     private AnytaskApiClient api;
     private SwipeRefreshLayout rootView;
+    private Integer organizationId;
+    private Context context;
 
     public FillOrganizationTasksTask(SchoolFragment fragment,
                                      FragmentManager fragmentManager, AnytaskApiClient api,
                                      SwipeRefreshLayout rootView) {
         this.fragment = fragment;
-
         this.fragmentManager = fragmentManager;
         this.api = api;
+        context = fragment.getContext();
         this.rootView = rootView;
     }
 
     @Override
-    protected Collection<Course> doInBackground(Integer... params) {
-        if (fragment.getCourses() == null)
-            fragment.setCourses(api.organizationsApi().getCourses(params[0]));
+    protected List<Course> doInBackground(Integer... params) {
+        if (fragment.getCourses() == null) {
+            organizationId = params[0];
+            fragment.setCourses(api.organizationsApi().getCourses(organizationId));
+        }
         return fragment.getCourses();
     }
 
     @Override
-    protected void onPostExecute(Collection<Course> courses) {
+    protected void onPostExecute(final List<Course> courses) {
         if (courses == null) {
-            this.execute();
-            return;
-        }
-
-        if (fragment.isRemoving()) {
-            if (rootView.isRefreshing())
-                rootView.setRefreshing(false);
+            new FillOrganizationTasksTask(fragment, fragmentManager, api, rootView).execute(organizationId);
             return;
         }
 
@@ -69,13 +70,17 @@ public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, Collecti
         adapter.clear();
         adapter.addAll(courseNames);
 
-
         coursesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TasksFragment tasksFragment = new TasksFragment();
+                Course course = courses.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putString(context.getString(R.string.bundle_course), new Gson().toJson(course));
+                tasksFragment.setArguments(bundle);
                 fragmentManager
                         .beginTransaction()
-                        .replace(R.id.content_frame, new TasksFragment())
+                        .replace(R.id.content_frame, tasksFragment)
                         .addToBackStack(null)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();

@@ -44,8 +44,7 @@ public class MainFragment extends Fragment {
 
     private FillOrganizationsTask getFillOrganizationsTask(SwipeRefreshLayout rootView) {
         return new FillOrganizationsTask(this,
-                getFragmentManager(), new AnytaskApiClient(),
-                getContext(), rootView);
+                getFragmentManager(), new AnytaskApiClient(), rootView);
     }
 
     public List<Organization> getOrganizations() {
