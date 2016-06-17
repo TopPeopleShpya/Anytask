@@ -1,6 +1,5 @@
 package com.company.anytask.api.android.tasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.company.anytask.R;
+import com.company.anytask.SchoolFragment;
 import com.company.anytask.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Course;
@@ -19,28 +19,26 @@ import java.util.Collection;
 import java.util.List;
 
 public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, Collection<Course>> {
-    private ArrayAdapter<String> adapter;
-    private ListView coursesListView;
+    private SchoolFragment fragment;
     private FragmentManager fragmentManager;
     private AnytaskApiClient api;
-    private Context context;
     private SwipeRefreshLayout rootView;
 
-    public FillOrganizationTasksTask(ArrayAdapter<String> adapter, ListView coursesListView,
+    public FillOrganizationTasksTask(SchoolFragment fragment,
                                      FragmentManager fragmentManager, AnytaskApiClient api,
-                                     Context context, SwipeRefreshLayout rootView) {
+                                     SwipeRefreshLayout rootView) {
+        this.fragment = fragment;
 
-        this.adapter = adapter;
-        this.coursesListView = coursesListView;
         this.fragmentManager = fragmentManager;
         this.api = api;
-        this.context = context;
         this.rootView = rootView;
     }
 
     @Override
     protected Collection<Course> doInBackground(Integer... params) {
-        return api.organizationsApi().getCourses(params[0]);
+        if (fragment.getCourses() == null)
+            fragment.setCourses(api.organizationsApi().getCourses(params[0]));
+        return fragment.getCourses();
     }
 
     @Override
@@ -49,6 +47,21 @@ public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, Collecti
             this.execute();
             return;
         }
+
+        if (fragment.isRemoving()) {
+            if (rootView.isRefreshing())
+                rootView.setRefreshing(false);
+            return;
+        }
+
+        final ListView coursesListView = (ListView) rootView.findViewById(R.id.courses_list);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.getActivity(),
+                R.layout.list_item_organization,
+                R.id.list_item_school_textview,
+                new ArrayList<String>()
+        );
+        coursesListView.setAdapter(adapter);
+
         final List<String> courseNames = new ArrayList<>();
         for (Course course : courses) {
             courseNames.add(course.name);

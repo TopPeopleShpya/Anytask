@@ -6,17 +6,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.company.anytask.api.android.tasks.FillOrganizationTasksTask;
 import com.company.anytask.api.client.AnytaskApiClient;
+import com.company.anytask.models.Course;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SchoolFragment extends Fragment {
     private Bundle args;
-
+    private List<Course> courses;
     @Override
     public void setArguments(Bundle args) {
         this.args = args;
@@ -24,7 +23,7 @@ public class SchoolFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         String name = args.getString(getContext().getString(R.string.bundle_organization_name));
         final Integer organizationId = args.getInt(getContext().getString(R.string.bundle_organization_id));
@@ -34,29 +33,36 @@ public class SchoolFragment extends Fragment {
         TextView organizationNameTextView = (TextView) rootView.findViewById(R.id.organization_name);
         organizationNameTextView.setText(name);
 
-        final ListView coursesListView = (ListView) rootView.findViewById(R.id.courses_list);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                R.layout.list_item_organization,
-                R.id.list_item_school_textview,
-                new ArrayList<String>()
-        );
-        coursesListView.setAdapter(adapter);
         final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new FillOrganizationTasksTask(adapter, coursesListView,
-                        getFragmentManager(), new AnytaskApiClient(),
-                        getContext(), rootView).execute(organizationId);
+                courses = null;
+                getFillOrganizationTasksTask(rootView).execute(organizationId);
             }
         };
         rootView.setOnRefreshListener(onRefreshListener);
+        
         rootView.post(new Runnable() {
             @Override
             public void run() {
                 rootView.setRefreshing(true);
-                onRefreshListener.onRefresh();
+                getFillOrganizationTasksTask(rootView).execute(organizationId);
             }
         });
         return rootView;
+    }
+
+    private FillOrganizationTasksTask getFillOrganizationTasksTask(SwipeRefreshLayout rootView) {
+        return new FillOrganizationTasksTask(this,
+                getFragmentManager(), new AnytaskApiClient(),
+                rootView);
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }
