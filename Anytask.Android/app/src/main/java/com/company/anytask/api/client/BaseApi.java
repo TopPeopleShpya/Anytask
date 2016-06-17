@@ -10,14 +10,22 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 class BaseApi {
     private static final String TAG = BaseApi.class.getSimpleName();
-    private OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
     Gson gson = new Gson();
     String url;
 
-    BaseApi(String suffix) { url = combineUrls(Config.API_URL, suffix); }
+    BaseApi(String suffix) {
+        url = combineUrls(Config.API_URL, suffix);
+    }
 
     Reader getUrl(String url) {
         Request request = new Request.Builder()
@@ -35,8 +43,13 @@ class BaseApi {
                     return null;
             }
 
+        } catch (SocketTimeoutException e) {
+            Log.e(TAG, "Time limit exceeded while processing request:\n" + url, e);
         } catch (IOException e) {
             Log.e(TAG, "Failed to retrieve url: " + url, e);
+        } catch (Exception e) {
+            Log.e(TAG, "Unexpected exception was thrown", e);
+            throw e;
         }
         return null;
     }

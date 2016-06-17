@@ -2,6 +2,7 @@ package com.company.anytask;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,22 +27,36 @@ public class SchoolFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         String name = args.getString(getContext().getString(R.string.bundle_organization_name));
-        Integer organizationId = args.getInt(getContext().getString(R.string.bundle_organization_id));
+        final Integer organizationId = args.getInt(getContext().getString(R.string.bundle_organization_id));
 
-        View rootView = inflater.inflate(R.layout.fragment_organization, container, false);
+        final SwipeRefreshLayout rootView = (SwipeRefreshLayout) inflater
+                .inflate(R.layout.fragment_organization, container, false);
         TextView organizationNameTextView = (TextView) rootView.findViewById(R.id.organization_name);
         organizationNameTextView.setText(name);
 
-        ListView coursesListView = (ListView) rootView.findViewById(R.id.courses_list);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                R.layout.list_item_school,
+        final ListView coursesListView = (ListView) rootView.findViewById(R.id.courses_list);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.list_item_organization,
                 R.id.list_item_school_textview,
                 new ArrayList<String>()
         );
         coursesListView.setAdapter(adapter);
-        new FillOrganizationTasksTask(adapter, coursesListView,
-                getFragmentManager(), new AnytaskApiClient(),
-                getContext()).execute(organizationId);
+        final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new FillOrganizationTasksTask(adapter, coursesListView,
+                        getFragmentManager(), new AnytaskApiClient(),
+                        getContext(), rootView).execute(organizationId);
+            }
+        };
+        rootView.setOnRefreshListener(onRefreshListener);
+        rootView.post(new Runnable() {
+            @Override
+            public void run() {
+                rootView.setRefreshing(true);
+                onRefreshListener.onRefresh();
+            }
+        });
         return rootView;
     }
 }

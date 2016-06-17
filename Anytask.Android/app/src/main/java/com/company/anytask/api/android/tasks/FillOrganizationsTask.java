@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,21 +22,24 @@ import java.util.Collection;
 import java.util.List;
 
 public class FillOrganizationsTask extends AsyncTask<Void, Void, List<Organization>> {
+    private static final String TAG = FillOrganizationsTask.class.getSimpleName();
     private ArrayAdapter<String> adapter;
     private ListView schoolListView;
     private FragmentManager fragmentManager;
     private AnytaskApiClient api;
     private Context context;
+    private SwipeRefreshLayout rootView;
 
     public FillOrganizationsTask(ArrayAdapter<String> adapter, ListView schoolListView,
                                  FragmentManager fragmentManager, AnytaskApiClient api,
-                                 Context context) {
+                                 Context context, SwipeRefreshLayout rootView) {
 
         this.adapter = adapter;
         this.schoolListView = schoolListView;
         this.fragmentManager = fragmentManager;
         this.api = api;
         this.context = context;
+        this.rootView = rootView;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class FillOrganizationsTask extends AsyncTask<Void, Void, List<Organizati
     @Override
     protected void onPostExecute(final List<Organization> organizations) {
         if (organizations == null) {
-            this.execute();
+            new FillOrganizationsTask(adapter, schoolListView, fragmentManager, api, context, rootView).execute();
             return;
         }
         final List<String> organizationNames = new ArrayList<>();
@@ -72,5 +77,8 @@ public class FillOrganizationsTask extends AsyncTask<Void, Void, List<Organizati
                         .commit();
             }
         });
+
+        if (rootView.isRefreshing())
+            rootView.setRefreshing(false);
     }
 }

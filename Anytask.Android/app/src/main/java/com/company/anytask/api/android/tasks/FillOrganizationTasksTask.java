@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,16 +24,18 @@ public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, Collecti
     private FragmentManager fragmentManager;
     private AnytaskApiClient api;
     private Context context;
+    private SwipeRefreshLayout rootView;
 
     public FillOrganizationTasksTask(ArrayAdapter<String> adapter, ListView coursesListView,
                                      FragmentManager fragmentManager, AnytaskApiClient api,
-                                     Context context) {
+                                     Context context, SwipeRefreshLayout rootView) {
 
         this.adapter = adapter;
         this.coursesListView = coursesListView;
         this.fragmentManager = fragmentManager;
         this.api = api;
         this.context = context;
+        this.rootView = rootView;
     }
 
     @Override
@@ -66,5 +69,7 @@ public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, Collecti
             }
         });
 
+        if (rootView.isRefreshing())
+            rootView.setRefreshing(false);
     }
 }

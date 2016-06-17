@@ -53,12 +53,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return item.getItemId() == R.id.action_settings || super.onOptionsItemSelected(item);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -86,7 +81,6 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
