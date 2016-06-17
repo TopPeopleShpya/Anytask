@@ -6,7 +6,6 @@ import com.company.anytask.models.Organization;
 
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 class OrganizationsApi extends BaseApi implements IOrganizationsApi {

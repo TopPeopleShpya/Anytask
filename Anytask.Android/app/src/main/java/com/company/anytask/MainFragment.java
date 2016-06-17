@@ -10,9 +10,10 @@ import android.widget.ListView;
 import com.company.anytask.api.android.tasks.FillOrganizationsTask;
 import com.company.anytask.api.client.AnytaskApiClient;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
