@@ -5,56 +5,43 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.company.anytask.api.android.tasks.FillOrganizationTasksTask;
+import com.company.anytask.api.client.AnytaskApiClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class SchoolFragment extends Fragment {
-    private String name;
+    private Bundle args;
 
-    public SchoolFragment() {
-        super();
-    }
-
-    public SchoolFragment(String name) {
-        this();
-        this.name = name;
+    @Override
+    public void setArguments(Bundle args) {
+        this.args = args;
+        super.setArguments(args);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_school, container, false);
-        TextView tv = (TextView) rootView.findViewById(R.id.school_name);
-        tv.setText(name);
+        String name = args.getString(getContext().getString(R.string.bundle_organization_name));
+        Integer organizationId = args.getInt(getContext().getString(R.string.bundle_organization_id));
 
-        List<String> courses = Arrays.asList(
-            "Алгоритмы и структуры данных",
-            "Python",
-            "Базы данных (2016)"
+        View rootView = inflater.inflate(R.layout.fragment_organization, container, false);
+        TextView organizationNameTextView = (TextView) rootView.findViewById(R.id.organization_name);
+        organizationNameTextView.setText(name);
+
+        ListView coursesListView = (ListView) rootView.findViewById(R.id.courses_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                R.layout.list_item_school,
+                R.id.list_item_school_textview,
+                new ArrayList<String>()
         );
-
-        ListView ul = (ListView) rootView.findViewById(R.id.courses_list);
-        ul.setAdapter(new ArrayAdapter<>(getActivity(),
-            R.layout.list_item_school,
-            R.id.list_item_school_textview,
-            new ArrayList<>(courses)
-        ));
-        ul.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new TasksFragment())
-                    .addToBackStack(null)
-                    .commit();
-            }
-        });
-
+        coursesListView.setAdapter(adapter);
+        new FillOrganizationTasksTask(adapter, coursesListView,
+                getFragmentManager(), new AnytaskApiClient(),
+                getContext()).execute(organizationId);
         return rootView;
     }
 }

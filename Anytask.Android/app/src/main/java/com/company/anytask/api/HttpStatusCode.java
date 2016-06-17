@@ -2,6 +2,8 @@
 // http://www.gnu.org/licenses/gpl.html GNU PUBLIC LICENSE 3.0
 package com.company.anytask.api;
 
+import android.util.Log;
+
 /**
  * Implementation type HttpStatusCode
  *
@@ -71,6 +73,7 @@ public enum HttpStatusCode {
     TIMEOUT_OCCURRED(524, "A timeout occurred")
     ;
 
+    private static final String TAG = HttpStatusCode.class.getSimpleName();
     private int code;
     private String desc;
     private String text;
@@ -79,6 +82,16 @@ public enum HttpStatusCode {
         this.code = code;
         this.desc = desc;
         this.text = Integer.toString(code);
+    }
+
+    public static HttpStatusCode fromCode(int code) {
+        for (HttpStatusCode httpStatusCode : HttpStatusCode.values()) {
+            if (httpStatusCode.getCode() == code) {
+                return httpStatusCode;
+            }
+        }
+        Log.e(TAG, "Trying to convert not existing code: " + code);
+        throw new IllegalArgumentException("There is no definition to code: " + code);
     }
 
     /**

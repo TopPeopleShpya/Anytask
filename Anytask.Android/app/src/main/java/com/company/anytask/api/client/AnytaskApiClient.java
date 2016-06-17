@@ -3,14 +3,19 @@ package com.company.anytask.api.client;
 import com.company.anytask.api.interfaces.*;
 
 public class AnytaskApiClient implements IAnytaskApiClient {
+    IOrganizationsApi organizationsApi = new OrganizationsApi();
+    ICoursesApi coursesApi = new CoursesApi();
+    IScoresApi scoresApi;
+    ITasksApi tasksApi;
+
     @Override
     public ICoursesApi coursesApi() {
-        return null;
+        return coursesApi;
     }
 
     @Override
     public IOrganizationsApi organizationsApi() {
-        return null;
+        return organizationsApi;
     }
 
     @Override
