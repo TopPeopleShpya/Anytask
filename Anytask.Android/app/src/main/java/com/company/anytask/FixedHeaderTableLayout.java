@@ -16,29 +16,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class FixedHeaderTableLayout extends RelativeLayout {
-    private final String HORIZONTAL_SCROLL_VIEW_B_TAG = "HorizontalScrollViewB";
-    private final String HORIZONTAL_SCROLL_VIEW_D_TAG = "HorizontalScrollViewD";
-    private final String SCROLL_VIEW_C_TAG = "ScrollViewC";
-    private final String SCROLL_VIEW_D_TAG = "ScrollViewD";
+    private final String HORIZONTAL_HEADERS_HORIZONTAL_SCROLL_TAG = "headerHorizontal";
+    private final String CONTENT_HORIZONTAL_SCROLL_TAG = "contentHorizontal";
+    private final String VERTICAL_HEADERS_VERTICAL_SCROLL_TAG = "headerVertical";
+    private final String CONTENT_VERTICAL_SCROLL_TAG = "contentVertical";
 
+    @SuppressWarnings("unused")
     private final String TAG = FixedHeaderTableLayout.class.getName();
 
     private Context context;
 
-    private TableLayout tableA;
-    private TableLayout tableB;
-    private TableLayout tableC;
-    private TableLayout tableD;
+    private TableLayout fixedTopLeftTableLayout;
+    private TableLayout horizontalHeadersTableLayout;
+    private TableLayout verticalHeadersTableLayout;
+    private TableLayout contentTableLayout;
 
-    private HorizontalScrollView horizontalScrollViewB;
-    private HorizontalScrollView horizontalScrollViewD;
+    private HorizontalScrollView horizontalHeadersHorizontalScrollView;
+    private HorizontalScrollView contentHorizontalScrollView;
 
-    private ScrollView scrollViewC;
-    private ScrollView scrollViewD;
+    private ScrollView verticalHeadersVerticalScrollView;
+    private ScrollView contentVerticalScrollView;
 
-    private CellItem[] headers;
-    private int[] headerCellsWidth;
+    private CellItem[] horizontalHeaders;
+    private Integer[] horizontalHeadersWidth;
+    private CellItem[] verticalHeaders;
 
     public FixedHeaderTableLayout(Context context, AttributeSet attributes) {
         super(context, attributes);
@@ -50,186 +53,232 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         this.context = context;
     }
 
-    public void setTableContent(CellItem[] headers, ArrayList<ArrayList<CellItem>> items) {
+    void setTableContent(CellItem[] horizontalHeaders, CellItem[] verticalHeaders,
+                         ArrayList<ArrayList<CellItem>> items) {
         removeAllViews();
-        this.headers = headers;
-        headerCellsWidth = new int[headers.length];
+        this.verticalHeaders = verticalHeaders;
+        this.horizontalHeaders = horizontalHeaders;
 
         initComponents();
         setComponentsId();
-        setScrollViewAndHorizontalScrollViewTag();
+        setTags();
+        configureComponents();
+        addComponentsToMainLayout();
 
-        horizontalScrollViewB.addView(tableB);
-        scrollViewC.addView(tableC);
-        scrollViewD.addView(horizontalScrollViewD);
-        horizontalScrollViewD.addView(tableD);
+        fillFixedTopLeftTableLayout();
+        fillHorizontalHeadersTableLayout();
+        adjustFixedTopLeftAndHorizontalTableLayoutHeights();
 
-        addComponentToMainLayout();
-        setBackgroundColor(Color.RED);
+        horizontalHeadersWidth = getHorizontalHeadersWidth();
+        fillVerticalHeadersTableLayout();
+        fillContentTableLayout(items);
+        adjustVerticalHeadersAndContentHeights();
 
-        addTableRowToTableA();
-        addTableRowToTableB();
-        resizeHeaderHeight();
-        getTableRowHeaderCellWidth();
-        generateTableC_AndTable_B(items);
-        resizeBodyTableRowHeight();
+        adjustVerticalHeaderAndFixedTopLeftWidths();
+    }
+
+    private void adjustVerticalHeaderAndFixedTopLeftWidths() {
+        TableRow fixedTopLeftTableRow = (TableRow) fixedTopLeftTableLayout.getChildAt(0);
+        TableRow verticalHeaderTableRow = (TableRow) verticalHeadersTableLayout.getChildAt(0);
+
+        int fixedTopLeftWidth = getViewWidth(fixedTopLeftTableRow);
+        int verticalHeaderWidth = getMaxVerticalHeaderWidth();
+
+        TableRow tableRow = fixedTopLeftWidth < verticalHeaderWidth
+                ? fixedTopLeftTableRow
+                : verticalHeaderTableRow;
+        int finalWidth = fixedTopLeftWidth > verticalHeaderWidth
+                ? fixedTopLeftWidth
+                : verticalHeaderWidth;
+
+        adjustLayoutWidth(tableRow, finalWidth);
+    }
+
+    private int getMaxVerticalHeaderWidth() {
+        int childCount = verticalHeadersTableLayout.getChildCount();
+        int maxWidth = -1;
+
+        for (int i = 0; i < childCount; i++) {
+            TableRow tableRow = (TableRow) verticalHeadersTableLayout.getChildAt(i);
+            int tableRowWidth = getViewWidth(tableRow);
+            if (tableRowWidth > maxWidth)
+                maxWidth = tableRowWidth;
+        }
+        return maxWidth;
+    }
+
+    private void adjustLayoutWidth(TableRow tableRow, int width) {
+        int tableRowChildCount = tableRow.getChildCount();
+
+        for (int i = 0; i < tableRowChildCount; i++) {
+            View view = tableRow.getChildAt(i);
+            TableRow.LayoutParams params = (TableRow.LayoutParams) view.getLayoutParams();
+            params.width = width - (params.leftMargin + params.rightMargin);
+        }
+    }
+
+    private void configureComponents() {
+        fixedTopLeftTableLayout.setBackgroundColor(Color.GREEN);
+        horizontalHeadersHorizontalScrollView.setBackgroundColor(Color.LTGRAY);
+        horizontalHeadersHorizontalScrollView.setHorizontalScrollBarEnabled(false);
+        contentHorizontalScrollView.setHorizontalScrollBarEnabled(false);
+        verticalHeadersVerticalScrollView.setVerticalScrollBarEnabled(false);
+
+        horizontalHeadersHorizontalScrollView.addView(horizontalHeadersTableLayout);
+        verticalHeadersVerticalScrollView.addView(verticalHeadersTableLayout);
+        contentVerticalScrollView.addView(contentHorizontalScrollView);
+        contentHorizontalScrollView.addView(contentTableLayout);
     }
 
     private void initComponents() {
-        tableA = new TableLayout(context);
-        tableB = new TableLayout(context);
-        tableC = new TableLayout(context);
-        tableD = new TableLayout(context);
+        fixedTopLeftTableLayout = new TableLayout(context);
+        horizontalHeadersTableLayout = new TableLayout(context);
+        verticalHeadersTableLayout = new TableLayout(context);
+        contentTableLayout = new TableLayout(context);
 
-        horizontalScrollViewB = new MyHorizontalScrollView(context);
-        horizontalScrollViewD = new MyHorizontalScrollView(context);
+        horizontalHeadersHorizontalScrollView = new MyHorizontalScrollView(context);
+        contentHorizontalScrollView = new MyHorizontalScrollView(context);
 
-        scrollViewC = new MyScrollView(context);
-        scrollViewD = new MyScrollView(context);
-
-        tableA.setBackgroundColor(Color.GREEN);
-        horizontalScrollViewB.setBackgroundColor(Color.LTGRAY);
+        verticalHeadersVerticalScrollView = new MyScrollView(context);
+        contentVerticalScrollView = new MyScrollView(context);
     }
 
     private void setComponentsId() {
-        this.tableA.setId(1);
-        this.horizontalScrollViewB.setId(2);
-        this.scrollViewC.setId(3);
-        this.scrollViewD.setId(4);
+        this.fixedTopLeftTableLayout.setId(1);
+        this.horizontalHeadersHorizontalScrollView.setId(2);
+        this.verticalHeadersVerticalScrollView.setId(3);
+        this.contentVerticalScrollView.setId(4);
     }
 
-    private void setScrollViewAndHorizontalScrollViewTag(){
-        horizontalScrollViewB.setTag(HORIZONTAL_SCROLL_VIEW_B_TAG);
-        horizontalScrollViewD.setTag(HORIZONTAL_SCROLL_VIEW_D_TAG);
-        scrollViewC.setTag(SCROLL_VIEW_C_TAG);
-        scrollViewD.setTag(SCROLL_VIEW_D_TAG);
+    private void setTags() {
+        horizontalHeadersHorizontalScrollView.setTag(HORIZONTAL_HEADERS_HORIZONTAL_SCROLL_TAG);
+        contentHorizontalScrollView.setTag(CONTENT_HORIZONTAL_SCROLL_TAG);
+        verticalHeadersVerticalScrollView.setTag(VERTICAL_HEADERS_VERTICAL_SCROLL_TAG);
+        contentVerticalScrollView.setTag(CONTENT_VERTICAL_SCROLL_TAG);
     }
 
-    private void addComponentToMainLayout(){
-        RelativeLayout.LayoutParams bParams = new RelativeLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
+    private void addComponentsToMainLayout() {
+        LayoutParams horizontalHeadersLayoutParams = getWrapContentLayoutParams();
+        horizontalHeadersLayoutParams.addRule(RelativeLayout.RIGHT_OF, fixedTopLeftTableLayout.getId());
+
+        LayoutParams verticalHeadersLayoutParams = getWrapContentLayoutParams();
+        verticalHeadersLayoutParams.addRule(RelativeLayout.BELOW, fixedTopLeftTableLayout.getId());
+
+        LayoutParams contentLayoutParams = getWrapContentLayoutParams();
+        contentLayoutParams.addRule(RelativeLayout.RIGHT_OF, verticalHeadersVerticalScrollView.getId());
+        contentLayoutParams.addRule(RelativeLayout.BELOW, horizontalHeadersHorizontalScrollView.getId());
+
+        addView(fixedTopLeftTableLayout);
+        addView(horizontalHeadersHorizontalScrollView, horizontalHeadersLayoutParams);
+        addView(verticalHeadersVerticalScrollView, verticalHeadersLayoutParams);
+        addView(contentVerticalScrollView, contentLayoutParams);
+    }
+
+    private LayoutParams getWrapContentLayoutParams() {
+        return new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
         );
-        bParams.addRule(RelativeLayout.RIGHT_OF, tableA.getId());
-
-        RelativeLayout.LayoutParams cParams = new RelativeLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
-        );
-        cParams.addRule(RelativeLayout.BELOW, tableA.getId());
-
-        RelativeLayout.LayoutParams dParams = new RelativeLayout.LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.WRAP_CONTENT
-        );
-        dParams.addRule(RelativeLayout.RIGHT_OF, scrollViewC.getId());
-        dParams.addRule(RelativeLayout.BELOW, horizontalScrollViewB.getId());
-
-        addView(tableA);
-        addView(horizontalScrollViewB, bParams);
-        addView(scrollViewC, cParams);
-        addView(scrollViewD, dParams);
     }
 
-    private void addTableRowToTableA(){
-        tableA.addView(componentATableRow());
+    private void fillFixedTopLeftTableLayout() {
+        fixedTopLeftTableLayout.addView(createFixedTopLeftTableRow());
     }
 
-    private void addTableRowToTableB(){
-        tableB.addView(componentBTableRow());
+    private void fillHorizontalHeadersTableLayout() {
+        horizontalHeadersTableLayout.addView(createHorizontalHeadersTableRow());
     }
 
-    private TableRow componentATableRow(){
-        TableRow componentATableRow = new TableRow(context);
-        TextView textView = headerTextView(headers[0]);
-        componentATableRow.addView(textView);
+    private TableRow createFixedTopLeftTableRow() {
+        TableRow tableRow = new TableRow(context);
+        TextView textView = createHeaderTextView(new CellItem(""));
+        tableRow.addView(textView);
 
-        return componentATableRow;
+        return tableRow;
     }
 
-    private TableRow componentBTableRow(){
-        TableRow componentBTableRow = new TableRow(context);
-        int headerFieldCount = headers.length;
+    private TableRow createHorizontalHeadersTableRow() {
+        TableRow tableRow = new TableRow(context);
 
         TableRow.LayoutParams params = new TableRow.LayoutParams(
-            LayoutParams.WRAP_CONTENT,
-            LayoutParams.MATCH_PARENT
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT
         );
         params.setMargins(2, 0, 0, 0);
 
-        for (int i = 0; i < headerFieldCount - 1; i++) {
-            TextView textView = headerTextView(headers[i + 1]);
+        for (CellItem horizontalHeader : horizontalHeaders) {
+            TextView textView = createHeaderTextView(horizontalHeader);
             textView.setLayoutParams(params);
-            componentBTableRow.addView(textView);
+            tableRow.addView(textView);
         }
 
-        return componentBTableRow;
+        return tableRow;
     }
 
-    private void generateTableC_AndTable_B(ArrayList<ArrayList<CellItem>> items) {
-        for(List<CellItem> item : items){
-            TableRow tableRowForTableC = tableRowForTableC(item);
-            TableRow taleRowForTableD = taleRowForTableD(item);
-
-            tableRowForTableC.setBackgroundColor(Color.LTGRAY);
-            taleRowForTableD.setBackgroundColor(Color.LTGRAY);
-
-            tableC.addView(tableRowForTableC);
-            tableD.addView(taleRowForTableD);
+    private void fillVerticalHeadersTableLayout() {
+        for (CellItem item : verticalHeaders) {
+            verticalHeadersTableLayout.addView(createVerticalHeadersTableRow(item));
         }
     }
 
-    private TableRow tableRowForTableC(List<CellItem> cells){
+    private void fillContentTableLayout(ArrayList<ArrayList<CellItem>> items) {
+        for (List<CellItem> item : items) {
+            TableRow tableRow = createContentTableRow(item);
+            tableRow.setBackgroundColor(Color.LTGRAY);
+            contentTableLayout.addView(tableRow);
+        }
+    }
+
+    private TableRow createVerticalHeadersTableRow(CellItem cell) {
         TableRow.LayoutParams params = new TableRow.LayoutParams(
-            this.headerCellsWidth[0],
-            LayoutParams.MATCH_PARENT
+                this.horizontalHeadersWidth[0],
+                LayoutParams.MATCH_PARENT
         );
         params.setMargins(0, 2, 0, 0);
 
-        TableRow tableRowForTableC = new TableRow(this.context);
-        TextView textView = this.bodyTextView(cells.get(0));
-        tableRowForTableC.addView(textView,params);
+        TableRow tableRow = new TableRow(this.context);
+        TextView textView = createContentTextView(cell);
+        tableRow.addView(textView, params);
 
-        return tableRowForTableC;
+        return tableRow;
     }
 
-    private TableRow taleRowForTableD(List<CellItem> cells){
-        TableRow taleRowForTableD = new TableRow(this.context);
-        int loopCount = ((TableRow)this.tableB.getChildAt(0)).getChildCount();
+    private TableRow createContentTableRow(List<CellItem> cells) {
+        TableRow tableRow = new TableRow(this.context);
+        int loopCount = horizontalHeaders.length;
 
-        for (int i = 0 ; i < loopCount; i++) {
+        for (int i = 0; i < loopCount; i++) {
             TableRow.LayoutParams params = new TableRow.LayoutParams(
-                headerCellsWidth[i + 1],
-                LayoutParams.MATCH_PARENT
+                    horizontalHeadersWidth[i],
+                    LayoutParams.MATCH_PARENT
             );
             params.setMargins(2, 2, 0, 0);
 
-            TextView textViewB = this.bodyTextView(cells.get(i + 1));
-            taleRowForTableD.addView(textViewB,params);
+            TextView textViewB = createContentTextView(cells.get(i));
+            tableRow.addView(textViewB, params);
         }
 
-        return taleRowForTableD;
+        return tableRow;
     }
 
-    private TextView bodyTextView(final CellItem item){
-        TextView bodyTextView = new TextView(this.context);
-        bodyTextView.setOnClickListener(new OnClickListener() {
+    private TextView createContentTextView(final CellItem item) {
+        TextView textView = new TextView(this.context);
+        textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CommentActivity.class).putExtra(Intent.EXTRA_TEXT, item.text);
                 context.startActivity(intent);
             }
         });
-        bodyTextView.setBackgroundColor(Color.WHITE);
-        bodyTextView.setText(item.text);
-        bodyTextView.setGravity(Gravity.CENTER);
-        bodyTextView.setPadding(5, 5, 5, 5);
-        return bodyTextView;
+        textView.setBackgroundColor(Color.WHITE);
+        textView.setText(item.text);
+        textView.setGravity(Gravity.CENTER);
+        textView.setPadding(5, 5, 5, 5);
+        return textView;
     }
 
-    private TextView headerTextView(CellItem item){
+    private TextView createHeaderTextView(CellItem item) {
         TextView headerTextView = new TextView(this.context);
-        headerTextView.setBackgroundColor(Color.WHITE);
         headerTextView.setText(item.text);
         headerTextView.setGravity(Gravity.CENTER);
         headerTextView.setPadding(5, 5, 5, 5);
@@ -237,98 +286,71 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         return headerTextView;
     }
 
-    private void resizeHeaderHeight() {
-        TableRow productNameHeaderTableRow = (TableRow) tableA.getChildAt(0);
-        TableRow productInfoTableRow = (TableRow) tableB.getChildAt(0);
+    private void adjustFixedTopLeftAndHorizontalTableLayoutHeights() {
+        TableRow fixedTopLeftTableRow = (TableRow) fixedTopLeftTableLayout.getChildAt(0);
+        TableRow horizontalHeaderTableRow = (TableRow) horizontalHeadersTableLayout.getChildAt(0);
 
-        int rowAHeight = viewHeight(productNameHeaderTableRow);
-        int rowBHeight = viewHeight(productInfoTableRow);
+        int fixedTopLeftHeight = getViewHeight(fixedTopLeftTableRow);
+        int horizontalHeaderHeight = getViewHeight(horizontalHeaderTableRow);
 
-        TableRow tableRow = rowAHeight < rowBHeight ? productNameHeaderTableRow : productInfoTableRow;
-        int finalHeight = rowAHeight > rowBHeight ? rowAHeight : rowBHeight;
+        TableRow tableRow = fixedTopLeftHeight < horizontalHeaderHeight
+                ? fixedTopLeftTableRow
+                : horizontalHeaderTableRow;
+        int finalHeight = fixedTopLeftHeight > horizontalHeaderHeight
+                ? fixedTopLeftHeight
+                : horizontalHeaderHeight;
 
-        matchLayoutHeight(tableRow, finalHeight);
+        adjustLayoutHeight(tableRow, finalHeight);
     }
 
-    private void getTableRowHeaderCellWidth() {
-        int tableAChildCount = ((TableRow)tableA.getChildAt(0)).getChildCount();
-        int tableBChildCount = ((TableRow)tableB.getChildAt(0)).getChildCount();
+    private Integer[] getHorizontalHeadersWidth() {
+        Integer[] headerCellsWidth = new Integer[horizontalHeaders.length];
+        for (int i = 0; i < horizontalHeaders.length; i++) {
+            headerCellsWidth[i] = getViewWidth(((TableRow) horizontalHeadersTableLayout.getChildAt(0)).getChildAt(i));
+        }
+        return headerCellsWidth;
+    }
 
-        for (int i = 0; i < tableAChildCount + tableBChildCount; i++) {
-            if (i == 0) {
-                headerCellsWidth[i] = viewWidth(((TableRow)tableA.getChildAt(0)).getChildAt(i));
-            } else {
-                headerCellsWidth[i] = viewWidth(((TableRow)tableB.getChildAt(0)).getChildAt(i-1));
-            }
+    private void adjustVerticalHeadersAndContentHeights() {
+        for (int i = 0; i < verticalHeaders.length; i++) {
+            TableRow verticalHeaderTableRow = (TableRow) verticalHeadersTableLayout.getChildAt(i);
+            TableRow contentTableRow = (TableRow) contentTableLayout.getChildAt(i);
+
+            int verticalHeaderTableRowHeight = getViewHeight(verticalHeaderTableRow);
+            int contentTableRowHeight = getViewHeight(contentTableRow);
+
+            TableRow tableRow = verticalHeaderTableRowHeight < contentTableRowHeight
+                    ? verticalHeaderTableRow
+                    : contentTableRow;
+            int finalHeight = verticalHeaderTableRowHeight > contentTableRowHeight
+                    ? verticalHeaderTableRowHeight
+                    : contentTableRowHeight;
+
+            adjustLayoutHeight(tableRow, finalHeight);
         }
     }
 
-    private void resizeBodyTableRowHeight() {
-        int childCount = tableC.getChildCount();
-
-        for (int i = 0; i < childCount; i++) {
-            TableRow productNameHeaderTableRow = (TableRow) tableC.getChildAt(i);
-            TableRow productInfoTableRow = (TableRow)  tableD.getChildAt(i);
-
-            int rowAHeight = viewHeight(productNameHeaderTableRow);
-            int rowBHeight = viewHeight(productInfoTableRow);
-
-            TableRow tableRow = rowAHeight < rowBHeight ? productNameHeaderTableRow : productInfoTableRow;
-            int finalHeight = rowAHeight > rowBHeight ? rowAHeight : rowBHeight;
-
-            matchLayoutHeight(tableRow, finalHeight);
-        }
-    }
-
-    private void matchLayoutHeight(TableRow tableRow, int height) {
+    private void adjustLayoutHeight(TableRow tableRow, int height) {
         int tableRowChildCount = tableRow.getChildCount();
 
-        if(tableRowChildCount == 1) {
-            View view = tableRow.getChildAt(0);
+        for (int i = 0; i < tableRowChildCount; i++) {
+            View view = tableRow.getChildAt(i);
             TableRow.LayoutParams params = (TableRow.LayoutParams) view.getLayoutParams();
             params.height = height - (params.bottomMargin + params.topMargin);
-            return;
-        }
-
-        for (int i = 0; i < tableRowChildCount; i++) {
-            View view = tableRow.getChildAt(i);
-            TableRow.LayoutParams params = (TableRow.LayoutParams) view.getLayoutParams();
-            if (!isTheHeighestLayout(tableRow, i)) {
-                params.height = height - (params.bottomMargin + params.topMargin);
-                return;
-            }
         }
     }
 
-    private boolean isTheHeighestLayout(TableRow tableRow, int layoutPosition) {
-        int tableRowChildCount = tableRow.getChildCount();
-        int heighestViewPosition = -1;
-        int viewHeight = 0;
-
-        for (int i = 0; i < tableRowChildCount; i++) {
-            View view = tableRow.getChildAt(i);
-            int height = viewHeight(view);
-
-            if (viewHeight < height) {
-                heighestViewPosition = i;
-                viewHeight = height;
-            }
-        }
-
-        return heighestViewPosition == layoutPosition;
-    }
-
-    private int viewHeight(View view) {
+    private int getViewHeight(View view) {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         return view.getMeasuredHeight();
     }
 
-    private int viewWidth(View view) {
-        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+    private int getViewWidth(View view) {
+        view.measure(MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         return view.getMeasuredWidth();
     }
 
-    class MyHorizontalScrollView extends HorizontalScrollView{
+    private class MyHorizontalScrollView extends HorizontalScrollView {
         public MyHorizontalScrollView(Context context) {
             super(context);
         }
@@ -337,15 +359,15 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         protected void onScrollChanged(int l, int t, int oldl, int oldt) {
             String tag = (String) getTag();
 
-            if (tag.equals(HORIZONTAL_SCROLL_VIEW_B_TAG)) {
-                horizontalScrollViewD.scrollTo(l, 0);
+            if (tag.equals(HORIZONTAL_HEADERS_HORIZONTAL_SCROLL_TAG)) {
+                contentHorizontalScrollView.scrollTo(l, 0);
             } else {
-                horizontalScrollViewB.scrollTo(l, 0);
+                horizontalHeadersHorizontalScrollView.scrollTo(l, 0);
             }
         }
     }
 
-    class MyScrollView extends ScrollView {
+    private class MyScrollView extends ScrollView {
         public MyScrollView(Context context) {
             super(context);
         }
@@ -354,10 +376,10 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         protected void onScrollChanged(int l, int t, int oldl, int oldt) {
             String tag = (String) getTag();
 
-            if (tag.equals(SCROLL_VIEW_C_TAG)) {
-                scrollViewD.scrollTo(0, t);
+            if (tag.equals(VERTICAL_HEADERS_VERTICAL_SCROLL_TAG)) {
+                contentVerticalScrollView.scrollTo(0, t);
             } else {
-                scrollViewC.scrollTo(0,t);
+                verticalHeadersVerticalScrollView.scrollTo(0, t);
             }
         }
     }
@@ -366,7 +388,7 @@ public class FixedHeaderTableLayout extends RelativeLayout {
 class CellItem {
     public String text;
 
-    public CellItem(String text) {
+    CellItem(String text) {
         this.text = text;
     }
 }

@@ -23,7 +23,7 @@ public class TasksFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         Course course = new Gson().fromJson(args.getString(getString(R.string.bundle_course)), Course.class);
 
         View rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
@@ -31,10 +31,10 @@ public class TasksFragment extends Fragment {
 
         int columnsCount = 10;
         int rowsCount = 20;
-        CellItem[] headers = new CellItem[columnsCount];
-        headers[0] = new CellItem("         ");
-        for (int i = 1; i < columnsCount; i++) {
-            headers[i] = new CellItem("header" + i);
+        CellItem[] horizontalHeaders = new CellItem[columnsCount];
+        CellItem[] verticalHeaders = new CellItem[rowsCount];
+        for (int i = 0; i < columnsCount; i++) {
+            horizontalHeaders[i] = new CellItem("header" + i);
         }
 
         ArrayList<ArrayList<CellItem>> items = new ArrayList<>();
@@ -43,9 +43,10 @@ public class TasksFragment extends Fragment {
             for (int j = 0; j < columnsCount; j++) {
                 items.get(i).add(new CellItem(i + " " + j));
             }
+            verticalHeaders[i] = new CellItem("vertical " + i);
         }
 
-        layout.setTableContent(headers, items);
+        layout.setTableContent(horizontalHeaders, verticalHeaders, items);
         return rootView;
     }
 }
