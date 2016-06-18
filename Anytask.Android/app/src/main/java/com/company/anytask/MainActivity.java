@@ -67,7 +67,11 @@ public class MainActivity extends AppCompatActivity
                 fragmentClass = MainFragment.class;
                 break;
             case R.id.nav_courses:
+                fragmentClass = MyCoursesFragment.class;
+                break;
             case R.id.nav_deadlines:
+                fragmentClass = MyDeadlinesFragment.class;
+                break;
             case R.id.nav_settings:
             case R.id.nav_about:
 
