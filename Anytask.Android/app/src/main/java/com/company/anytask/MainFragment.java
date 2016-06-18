@@ -19,7 +19,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         final SwipeRefreshLayout rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_main, container, false);
 
         final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
@@ -34,7 +34,8 @@ public class MainFragment extends Fragment {
         rootView.post(new Runnable() {
             @Override
             public void run() {
-                rootView.setRefreshing(true);
+                if (organizations == null)
+                    rootView.setRefreshing(true);
                 getFillOrganizationsTask(rootView).execute();
             }
         });

@@ -3,12 +3,11 @@ package com.company.anytask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.company.anytask.api.android.tasks.FillOrganizationTasksTask;
+import com.company.anytask.api.android.tasks.FillOrganizationCoursesTask;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Course;
 import com.company.anytask.models.Organization;
@@ -19,6 +18,7 @@ import java.util.List;
 public class SchoolFragment extends Fragment {
     private Bundle args;
     private List<Course> courses;
+
     @Override
     public void setArguments(Bundle args) {
         this.args = args;
@@ -40,7 +40,7 @@ public class SchoolFragment extends Fragment {
             @Override
             public void onRefresh() {
                 courses = null;
-                getFillOrganizationTasksTask(rootView).execute(organization.id);
+                getFillOrganizationCoursesTask(rootView).execute(organization.id);
             }
         };
         rootView.setOnRefreshListener(onRefreshListener);
@@ -48,16 +48,17 @@ public class SchoolFragment extends Fragment {
         rootView.post(new Runnable() {
             @Override
             public void run() {
-                rootView.setRefreshing(true);
-                getFillOrganizationTasksTask(rootView).execute(organization.id);
+                if (courses == null)
+                    rootView.setRefreshing(true);
+                getFillOrganizationCoursesTask(rootView).execute(organization.id);
             }
         });
 
         return rootView;
     }
 
-    private FillOrganizationTasksTask getFillOrganizationTasksTask(SwipeRefreshLayout rootView) {
-        return new FillOrganizationTasksTask(this,
+    private FillOrganizationCoursesTask getFillOrganizationCoursesTask(SwipeRefreshLayout rootView) {
+        return new FillOrganizationCoursesTask(this,
                 getFragmentManager(), new AnytaskApiClient(),
                 rootView);
     }

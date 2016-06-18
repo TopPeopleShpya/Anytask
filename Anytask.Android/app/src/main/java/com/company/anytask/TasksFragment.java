@@ -14,6 +14,7 @@ import java.util.List;
 
 public class TasksFragment extends Fragment {
     private Bundle args;
+    private List<Task> tasks;
 
     @Override
     public void setArguments(Bundle args) {
@@ -48,5 +49,13 @@ public class TasksFragment extends Fragment {
 
         layout.setTableContent(horizontalHeaders, verticalHeaders, items);
         return rootView;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

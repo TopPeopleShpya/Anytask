@@ -18,10 +18,9 @@ import com.company.anytask.models.Course;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, List<Course>> {
+public class FillOrganizationCoursesTask extends AsyncTask<Integer, Void, List<Course>> {
     private SchoolFragment fragment;
     private FragmentManager fragmentManager;
     private AnytaskApiClient api;
@@ -29,9 +28,9 @@ public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, List<Cou
     private Integer organizationId;
     private Context context;
 
-    public FillOrganizationTasksTask(SchoolFragment fragment,
-                                     FragmentManager fragmentManager, AnytaskApiClient api,
-                                     SwipeRefreshLayout rootView) {
+    public FillOrganizationCoursesTask(SchoolFragment fragment,
+                                       FragmentManager fragmentManager, AnytaskApiClient api,
+                                       SwipeRefreshLayout rootView) {
         this.fragment = fragment;
         this.fragmentManager = fragmentManager;
         this.api = api;
@@ -51,7 +50,7 @@ public class FillOrganizationTasksTask extends AsyncTask<Integer, Void, List<Cou
     @Override
     protected void onPostExecute(final List<Course> courses) {
         if (courses == null) {
-            new FillOrganizationTasksTask(fragment, fragmentManager, api, rootView).execute(organizationId);
+            new FillOrganizationCoursesTask(fragment, fragmentManager, api, rootView).execute(organizationId);
             return;
         }
 

@@ -6,12 +6,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.HorizontalScrollView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +18,6 @@ public class FixedHeaderTableLayout extends RelativeLayout {
     private final String VERTICAL_HEADERS_VERTICAL_SCROLL_TAG = "headerVertical";
     private final String CONTENT_VERTICAL_SCROLL_TAG = "contentVertical";
 
-    @SuppressWarnings("unused")
     private final String TAG = FixedHeaderTableLayout.class.getName();
 
     private Context context;
