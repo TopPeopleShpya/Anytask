@@ -88,9 +88,11 @@
   <ItemGroup>
     <Compile Include="Account\AccountBindingModels.cs" />
     <Compile Include="Account\AccountViewModels.cs" />
+    <Compile Include="Anytask\Comment.cs" />
     <Compile Include="Anytask\Course.cs" />
     <Compile Include="Anytask\Organization.cs" />
     <Compile Include="Anytask\Score.cs" />
+    <Compile Include="Anytask\Status.cs" />
     <Compile Include="Anytask\Task.cs" />
     <Compile Include="Identity\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
