@@ -13,6 +13,7 @@ import com.company.anytask.models.Course;
 import com.company.anytask.models.Organization;
 import com.google.gson.Gson;
 
+import java.util.Date;
 import java.util.List;
 
 public class SchoolFragment extends Fragment {
@@ -28,13 +29,12 @@ public class SchoolFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        final Organization organization = new Gson()
+        final Organization organization = GsonSingleton.getGson()
                 .fromJson(args.getString(getString(R.string.bundle_organization)), Organization.class);
 
         final SwipeRefreshLayout rootView = (SwipeRefreshLayout) inflater
                 .inflate(R.layout.fragment_organization, container, false);
-        TextView organizationNameTextView = (TextView) rootView.findViewById(R.id.organization_name);
-        organizationNameTextView.setText(organization.name);
+        ((TextView) rootView.findViewById(R.id.organization_name)).setText(organization.name);
 
         final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -3,10 +3,10 @@ package com.company.anytask.api.client;
 import com.company.anytask.api.interfaces.*;
 
 public class AnytaskApiClient implements IAnytaskApiClient {
-    IOrganizationsApi organizationsApi = new OrganizationsApi();
-    ICoursesApi coursesApi = new CoursesApi();
-    IScoresApi scoresApi;
-    ITasksApi tasksApi;
+    private IOrganizationsApi organizationsApi = new OrganizationsApi();
+    private ICoursesApi coursesApi = new CoursesApi();
+    private IScoresApi scoresApi = new ScoresApi();
+    private ITasksApi tasksApi;
 
     @Override
     public ICoursesApi coursesApi() {
@@ -20,11 +20,11 @@ public class AnytaskApiClient implements IAnytaskApiClient {
 
     @Override
     public IScoresApi scoresApi() {
-        return null;
+        return scoresApi;
     }
 
     @Override
     public ITasksApi tasksApi() {
-        return null;
+        return tasksApi;
     }
 }

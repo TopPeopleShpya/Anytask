@@ -2,19 +2,26 @@ package com.company.anytask;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import com.company.anytask.api.android.tasks.FillCourseTasksTask;
+import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Course;
+import com.company.anytask.models.Score;
 import com.company.anytask.models.Task;
-import com.google.gson.Gson;
+import com.company.anytask.models.User;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TasksFragment extends Fragment {
     private Bundle args;
     private List<Task> tasks;
+    private List<User> students;
+    private HashMap<User, HashMap<Task, Score>> scores;
 
     @Override
     public void setArguments(Bundle args) {
@@ -23,32 +30,35 @@ public class TasksFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        Course course = new Gson().fromJson(args.getString(getString(R.string.bundle_course)), Course.class);
+        final Course course = GsonSingleton.getGson()
+                .fromJson(args.getString(getString(R.string.bundle_course)), Course.class);
 
-        View rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
-        FixedHeaderTableLayout layout = (FixedHeaderTableLayout) rootView.findViewById(R.id.table);
+        final SwipeRefreshLayout rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_tasks, container, false);
+        ((TextView) rootView.findViewById(R.id.course_name)).setText(course.name);
 
-        int columnsCount = 10;
-        int rowsCount = 20;
-        CellItem[] horizontalHeaders = new CellItem[columnsCount];
-        CellItem[] verticalHeaders = new CellItem[rowsCount];
-        for (int i = 0; i < columnsCount; i++) {
-            horizontalHeaders[i] = new CellItem("header" + i);
-        }
-
-        ArrayList<ArrayList<CellItem>> items = new ArrayList<>();
-        for (int i = 0; i < rowsCount; i++) {
-            items.add(new ArrayList<CellItem>());
-            for (int j = 0; j < columnsCount; j++) {
-                items.get(i).add(new CellItem(i + " " + j));
+        final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                tasks = null;
+                getFillCourseTasksTask(rootView).execute(course.id);
             }
-            verticalHeaders[i] = new CellItem("vertical " + i);
-        }
+        };
+        rootView.setOnRefreshListener(onRefreshListener);
 
-        layout.setTableContent(horizontalHeaders, verticalHeaders, items);
+        rootView.post(new Runnable() {
+            @Override
+            public void run() {
+                getFillCourseTasksTask(rootView).execute(course.id);
+            }
+        });
+
         return rootView;
+    }
+
+    private FillCourseTasksTask getFillCourseTasksTask(SwipeRefreshLayout rootView) {
+        return new FillCourseTasksTask(this, getFragmentManager(), new AnytaskApiClient(), rootView);
     }
 
     public List<Task> getTasks() {
@@ -57,5 +67,21 @@ public class TasksFragment extends Fragment {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public List<User> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<User> users) {
+        this.students = users;
+    }
+
+    public HashMap<User, HashMap<Task, Score>> getScores() {
+        return scores;
+    }
+
+    public void setScores(HashMap<User, HashMap<Task, Score>> scores) {
+        this.scores = scores;
     }
 }

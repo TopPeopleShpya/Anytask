@@ -47,8 +47,8 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         this.context = context;
     }
 
-    void setTableContent(CellItem[] horizontalHeaders, CellItem[] verticalHeaders,
-                         ArrayList<ArrayList<CellItem>> items) {
+    public void setTableContent(CellItem[] horizontalHeaders, CellItem[] verticalHeaders,
+                                ArrayList<ArrayList<CellItem>> items) {
         removeAllViews();
         this.verticalHeaders = verticalHeaders;
         this.horizontalHeaders = horizontalHeaders;
@@ -255,8 +255,10 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         return tableRow;
     }
 
+
+
     private TextView createContentTextView(final CellItem item) {
-        TextView textView = new TextView(this.context);
+        TextView textView = new TextView(context);
         textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -379,10 +381,3 @@ public class FixedHeaderTableLayout extends RelativeLayout {
     }
 }
 
-class CellItem {
-    public String text;
-
-    CellItem(String text) {
-        this.text = text;
-    }
-}

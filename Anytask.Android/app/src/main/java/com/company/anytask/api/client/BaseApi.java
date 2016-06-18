@@ -2,6 +2,7 @@ package com.company.anytask.api.client;
 
 import android.util.Log;
 import com.company.anytask.Config;
+import com.company.anytask.GsonSingleton;
 import com.company.anytask.api.HttpStatusCode;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
@@ -20,7 +21,7 @@ class BaseApi {
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build();
-    Gson gson = new Gson();
+    Gson gson = GsonSingleton.getGson();
     String url;
 
     BaseApi(String suffix) {
@@ -39,7 +40,8 @@ class BaseApi {
                     return response.body().charStream();
                 default:
                     Log.e(TAG, "There are some issues at server side\n" +
-                            httpStatusCode.asText() + ":" + httpStatusCode.getDesc());
+                            httpStatusCode.asText() + ":" + httpStatusCode.getDesc() + "\n" +
+                            request.url().toString());
                     return null;
             }
 

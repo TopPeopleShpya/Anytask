@@ -34,8 +34,6 @@ public class MainFragment extends Fragment {
         rootView.post(new Runnable() {
             @Override
             public void run() {
-                if (organizations == null)
-                    rootView.setRefreshing(true);
                 getFillOrganizationsTask(rootView).execute();
             }
         });

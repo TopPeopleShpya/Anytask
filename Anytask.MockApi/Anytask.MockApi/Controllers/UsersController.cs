@@ -14,7 +14,8 @@ namespace Anytask.MockApi.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        [Route("Course/{id:int}/Students")]
+        // GET: api/Courses/{courseId}/Students
+        [Route("Courses/{courseId:int}/Students")]
         public IHttpActionResult GetCourseStudents(int courseId)
         {
             var course = db.Courses.Find(courseId);
@@ -22,7 +23,9 @@ namespace Anytask.MockApi.Controllers
                 return NotFound();
             return Ok(course.Students.Select(s => new User {Id = s.Id, Name = s.UserName}));
         }
-        [Route("Course/{id:int}/Teachers")]
+
+        // GET: api/Courses/{courseId}/Teachers
+        [Route("Courses/{courseId:int}/Teachers")]
         public IHttpActionResult GetCourseTeachers(int courseId)
         {
             var course = db.Courses.Find(courseId);

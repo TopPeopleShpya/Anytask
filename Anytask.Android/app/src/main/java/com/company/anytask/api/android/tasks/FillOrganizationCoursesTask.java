@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.company.anytask.GsonSingleton;
 import com.company.anytask.R;
 import com.company.anytask.SchoolFragment;
 import com.company.anytask.TasksFragment;
@@ -36,6 +37,12 @@ public class FillOrganizationCoursesTask extends AsyncTask<Integer, Void, List<C
         this.api = api;
         context = fragment.getContext();
         this.rootView = rootView;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if (fragment.getCourses() == null)
+            rootView.setRefreshing(true);
     }
 
     @Override
@@ -75,7 +82,7 @@ public class FillOrganizationCoursesTask extends AsyncTask<Integer, Void, List<C
                 TasksFragment tasksFragment = new TasksFragment();
                 Course course = courses.get(position);
                 Bundle bundle = new Bundle();
-                bundle.putString(context.getString(R.string.bundle_course), new Gson().toJson(course));
+                bundle.putString(context.getString(R.string.bundle_course), GsonSingleton.getGson().toJson(course));
                 tasksFragment.setArguments(bundle);
                 fragmentManager
                         .beginTransaction()
