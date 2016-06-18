@@ -5,6 +5,7 @@ import com.company.anytask.api.interfaces.*;
 public class AnytaskApiClient implements IAnytaskApiClient {
     IOrganizationsApi organizationsApi = new OrganizationsApi();
     ICoursesApi coursesApi = new CoursesApi();
+    IUsersApi usersApi = new UsersApi();
     IScoresApi scoresApi;
     ITasksApi tasksApi;
 
@@ -19,6 +20,11 @@ public class AnytaskApiClient implements IAnytaskApiClient {
     }
 
     @Override
+    public IUsersApi usersApi() {
+        return usersApi;
+    }
+
+    @Override
     public IScoresApi scoresApi() {
         return null;
     }
@@ -27,4 +33,5 @@ public class AnytaskApiClient implements IAnytaskApiClient {
     public ITasksApi tasksApi() {
         return null;
     }
+
 }
