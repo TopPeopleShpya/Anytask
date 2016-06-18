@@ -5,9 +5,9 @@ import com.company.anytask.api.interfaces.*;
 public class AnytaskApiClient implements IAnytaskApiClient {
     private IOrganizationsApi organizationsApi = new OrganizationsApi();
     private ICoursesApi coursesApi = new CoursesApi();
-    IUsersApi usersApi = new UsersApi();
-    IScoresApi scoresApi;
-    ITasksApi tasksApi;
+    private IUsersApi usersApi = new UsersApi();
+    private IScoresApi scoresApi = new ScoresApi();
+    private ITasksApi tasksApi = new TasksApi();
 
     @Override
     public ICoursesApi coursesApi() {
