@@ -71,10 +71,10 @@ namespace Anytask.MockApi.Controllers
                 score.Task,
                 score.Status,
                 score.Comments,
-                Student = new
+                Student = new User
                 {
-                    score.Student.Id,
-                    score.Student.UserName
+                    Id = score.Student.Id,
+                    Name = score.Student.UserName
                 }
             };
         }

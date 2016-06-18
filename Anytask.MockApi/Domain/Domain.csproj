@@ -94,6 +94,7 @@
     <Compile Include="Anytask\Score.cs" />
     <Compile Include="Anytask\Status.cs" />
     <Compile Include="Anytask\Task.cs" />
+    <Compile Include="Anytask\User.cs" />
     <Compile Include="Identity\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
