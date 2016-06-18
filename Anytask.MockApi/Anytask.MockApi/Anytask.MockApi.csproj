@@ -229,9 +229,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201606061855300_InitialModelSystem.cs" />
-    <Compile Include="Migrations\201606061855300_InitialModelSystem.Designer.cs">
-      <DependentUpon>201606061855300_InitialModelSystem.cs</DependentUpon>
+    <Compile Include="Migrations\201606181547149_Initial.cs" />
+    <Compile Include="Migrations\201606181547149_Initial.Designer.cs">
+      <DependentUpon>201606181547149_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\MySqlHistoryContext.cs" />
@@ -324,12 +324,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201606061855300_InitialModelSystem.resx">
-      <DependentUpon>201606061855300_InitialModelSystem.cs</DependentUpon>
-    </EmbeddedResource>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
+    <EmbeddedResource Include="Migrations\201606181547149_Initial.resx">
+      <DependentUpon>201606181547149_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

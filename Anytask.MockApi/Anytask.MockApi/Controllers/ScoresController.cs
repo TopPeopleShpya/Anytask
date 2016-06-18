@@ -69,6 +69,8 @@ namespace Anytask.MockApi.Controllers
                 score.Id,
                 score.Value,
                 score.Task,
+                score.Status,
+                score.Comments,
                 Student = new
                 {
                     score.Student.Id,

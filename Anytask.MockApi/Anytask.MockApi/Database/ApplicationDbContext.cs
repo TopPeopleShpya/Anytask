@@ -56,5 +56,6 @@ namespace Anytask.MockApi.Database
         public DbSet<Course> Courses { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Score> Scores { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }
