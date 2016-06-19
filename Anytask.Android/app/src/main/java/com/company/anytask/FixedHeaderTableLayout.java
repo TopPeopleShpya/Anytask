@@ -8,7 +8,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 
+import com.company.anytask.models.Status;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -185,7 +188,7 @@ public class FixedHeaderTableLayout extends RelativeLayout {
 
     private TableRow createFixedTopLeftTableRow() {
         TableRow tableRow = new TableRow(context);
-        TextView textView = createHeaderTextView(new CellItem(""));
+        TextView textView = createHeaderTextView(new CellItem(null, 0, Status.BLANK, ""));
         tableRow.addView(textView);
 
         return tableRow;
@@ -258,15 +261,28 @@ public class FixedHeaderTableLayout extends RelativeLayout {
 
 
     private TextView createContentTextView(final CellItem item) {
+        HashMap<Status, Integer> colors = new HashMap<Status, Integer>() {{
+            put(Status.BLANK, Color.WHITE);
+            put(Status.NEW, Color.GRAY);
+            put(Status.COMPLETE, Color.GREEN);
+            put(Status.INFO_REQUIRED, Color.CYAN);
+            put(Status.ON_REWORK, Color.RED);
+            put(Status.ON_REVIEW, Color.YELLOW);
+        }};
+
         TextView textView = new TextView(context);
         textView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, CommentActivity.class).putExtra(Intent.EXTRA_TEXT, item.text);
+                Intent intent = new Intent(context, CommentActivity.class)
+                        .putExtra("userId", item.userId)
+                        .putExtra("taskId", item.taskId)
+                        .putExtra(Intent.EXTRA_TEXT, item.text);
                 context.startActivity(intent);
             }
         });
-        textView.setBackgroundColor(Color.WHITE);
+
+        textView.setBackgroundColor(colors.get(item.status));
         textView.setText(item.text);
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(5, 5, 5, 5);

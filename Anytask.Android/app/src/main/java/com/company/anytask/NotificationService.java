@@ -65,12 +65,12 @@ public class NotificationService extends Service {
         notificationManager.notify(NOTIFICATION_EX, notification);
 
         timer.scheduleAtFixedRate(new TimerTask() {
+
             @Override
             public void run() {
                 // Check if there are updates here and notify if true
             }
         }, 0, UPDATE_INTERVAL);
-
         return START_STICKY;
     }
 

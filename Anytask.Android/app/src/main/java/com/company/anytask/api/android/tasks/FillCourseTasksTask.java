@@ -5,12 +5,14 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+
 import com.company.anytask.CellItem;
 import com.company.anytask.FixedHeaderTableLayout;
 import com.company.anytask.R;
 import com.company.anytask.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Score;
+import com.company.anytask.models.Status;
 import com.company.anytask.models.Task;
 import com.company.anytask.models.User;
 
@@ -82,13 +84,13 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
         int tasksCount = tasks.size();
         CellItem[] horizontalHeaders = new CellItem[tasksCount];
         for (int i = 0; i < tasksCount; i++) {
-            horizontalHeaders[i] = new CellItem(tasks.get(i).name);
+            horizontalHeaders[i] = new CellItem(null, tasks.get(i).id, com.company.anytask.models.Status.BLANK, tasks.get(i).name);
         }
 
         int studentsCount = students.size();
         CellItem[] verticalHeaders = new CellItem[studentsCount];
         for (int i = 0; i < studentsCount; i++) {
-            verticalHeaders[i] = new CellItem(students.get(i).name);
+            verticalHeaders[i] = new CellItem(students.get(i).id, 0, com.company.anytask.models.Status.BLANK, students.get(i).name);
         }
 
         ArrayList<ArrayList<CellItem>> items = new ArrayList<>();
@@ -97,8 +99,17 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
             items.add(row);
             for (Task task : tasks) {
                 Score score = scores.get(student).get(task);
-                row.add(new CellItem(score == null
-                    ? "Не проверено"
+                com.company.anytask.models.Status status;
+
+                if (score == null)
+                    status = com.company.anytask.models.Status.NEW;
+                else if (score.value == task.maxScore)
+                    status = com.company.anytask.models.Status.COMPLETE;
+                else
+                    status = com.company.anytask.models.Status.ON_REVIEW;
+
+                row.add(new CellItem(student.id, task.id, status, score == null
+                    ? "0"
                     : score.value.toString()));
             }
         }
