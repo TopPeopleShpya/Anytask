@@ -5,6 +5,7 @@ import android.util.Log;
 import com.company.anytask.api.interfaces.ITasksApi;
 import com.company.anytask.api.interfaces.IUsersApi;
 import com.company.anytask.models.Course;
+import com.company.anytask.models.Task;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -27,5 +28,15 @@ public class UsersApi extends BaseApi implements IUsersApi {
             Log.e(TAG, e.toString());
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public List<Task> getUserTasks(String userId) {
+        List<Course> courses = getUserCourses(userId);
+        List<Task> tasks = new ArrayList<>();
+        CoursesApi coursesApi = new CoursesApi();
+        for (Course course : courses)
+            tasks.addAll(coursesApi.getTasks(course.id));
+        return tasks;
     }
 }
