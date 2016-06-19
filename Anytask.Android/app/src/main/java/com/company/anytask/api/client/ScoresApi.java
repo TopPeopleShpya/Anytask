@@ -15,8 +15,8 @@ public class ScoresApi extends BaseApi implements IScoresApi {
     }
 
     @Override
-    public Score getScore(User student, Task task) {
-        Reader reader = getUrl(url + "?userId=" + student.id + "&taskId=" + task.id);
+    public Score getScore(String userId, int taskId) {
+        Reader reader = getUrl(url + "?userId=" + userId + "&taskId=" + taskId);
         return reader == null
                 ? null
                 : gson.fromJson(reader, Score.class);

@@ -61,7 +61,7 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
                     scores.put(student, new HashMap<Task, Score>());
                     for (Task task : fragment.getTasks()) {
                         Log.i(TAG, "getting score for " + task.name + " and " + student.name);
-                        scores.get(student).put(task, api.scoresApi().getScore(student, task));
+                        scores.get(student).put(task, api.scoresApi().getScore(student.id, task.id));
                     }
                 }
                 fragment.setScores(scores);
