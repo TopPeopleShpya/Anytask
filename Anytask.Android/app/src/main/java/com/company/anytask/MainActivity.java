@@ -1,5 +1,6 @@
 package com.company.anytask;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        startService(new Intent(MainActivity.this, NotificationService.class));
     }
 
     @Override
