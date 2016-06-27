@@ -5,14 +5,12 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-
 import com.company.anytask.CellItem;
 import com.company.anytask.FixedHeaderTableLayout;
 import com.company.anytask.R;
 import com.company.anytask.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Score;
-import com.company.anytask.models.Status;
 import com.company.anytask.models.Task;
 import com.company.anytask.models.User;
 
@@ -109,8 +107,8 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
                     status = com.company.anytask.models.Status.ON_REVIEW;
 
                 row.add(new CellItem(student.id, task.id, status, score == null
-                    ? "0"
-                    : score.value.toString()));
+                        ? "-"
+                        : score.value.toString()));
             }
         }
         FixedHeaderTableLayout layout = (FixedHeaderTableLayout) rootView.findViewById(R.id.table);

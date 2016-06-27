@@ -1,8 +1,5 @@
 package com.company.anytask.api.client;
 
-import android.util.Log;
-
-import com.company.anytask.api.interfaces.ITasksApi;
 import com.company.anytask.api.interfaces.IUsersApi;
 import com.company.anytask.models.Course;
 import com.company.anytask.models.Task;
@@ -13,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UsersApi extends BaseApi implements IUsersApi {
-    private static final String TAG = TasksApi.class.getSimpleName();
+    private static final String TAG = UsersApi.class.getSimpleName();
 
     UsersApi() {
         super("users");
@@ -21,13 +18,10 @@ public class UsersApi extends BaseApi implements IUsersApi {
 
     @Override
     public List<Course> getUserCourses(String userId) {
-        try {
-            Reader reader = getUrl(combineUrls(url, userId, "StudyingCourses"));
-            return Arrays.asList(gson.fromJson(reader, Course[].class));
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
-        return new ArrayList<>();
+        Reader reader = getUrl(combineUrls(url, userId, "StudyingCourses"));
+        return reader == null
+                ? new ArrayList<Course>()
+                : Arrays.asList(gson.fromJson(reader, Course[].class));
     }
 
     @Override
