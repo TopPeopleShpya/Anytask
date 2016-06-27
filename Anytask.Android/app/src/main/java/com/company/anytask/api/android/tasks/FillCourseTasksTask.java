@@ -82,12 +82,19 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
         }
 
         int tasksCount = tasks.size();
+        int studentsCount = students.size();
+        if (tasksCount == 0 && studentsCount == 0) {
+            if (rootView.isRefreshing())
+                rootView.setRefreshing(false);
+            return;
+        }
+
         CellItem[] horizontalHeaders = new CellItem[tasksCount];
         for (int i = 0; i < tasksCount; i++) {
             horizontalHeaders[i] = new CellItem(null, tasks.get(i).id, com.company.anytask.models.Status.BLANK, tasks.get(i).name);
         }
 
-        int studentsCount = students.size();
+
         CellItem[] verticalHeaders = new CellItem[studentsCount];
         for (int i = 0; i < studentsCount; i++) {
             verticalHeaders[i] = new CellItem(students.get(i).id, 0, com.company.anytask.models.Status.BLANK, students.get(i).name);
