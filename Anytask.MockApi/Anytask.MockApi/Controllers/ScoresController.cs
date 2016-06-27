@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -77,6 +78,17 @@ namespace Anytask.MockApi.Controllers
                     Name = score.Student.UserName
                 }
             };
+        }
+
+        [ResponseType(typeof (void))]
+        [Route("Scores/{id}/PostComment")]
+        public IHttpActionResult PostComment(int id, Comment comment)
+        {
+            var score = db.Scores.Find(id);
+            score.Comments.Add(comment);
+            db.Scores.AddOrUpdate(score);
+            db.SaveChanges();
+            return Ok();
         }
 
         // PUT: api/Scores/5
