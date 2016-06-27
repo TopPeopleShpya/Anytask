@@ -1,13 +1,10 @@
 package com.company.anytask.api.client;
 
 import com.company.anytask.api.interfaces.IScoresApi;
-import com.company.anytask.models.Course;
+import com.company.anytask.models.Comment;
 import com.company.anytask.models.Score;
-import com.company.anytask.models.Task;
-import com.company.anytask.models.User;
 
 import java.io.Reader;
-import java.util.Arrays;
 
 public class ScoresApi extends BaseApi implements IScoresApi {
     ScoresApi() {
@@ -20,5 +17,10 @@ public class ScoresApi extends BaseApi implements IScoresApi {
         return reader == null
                 ? null
                 : gson.fromJson(reader, Score.class);
+    }
+
+    @Override
+    public void postComment(int id, Comment comment) {
+        postUrl(combineUrls(url, id, "PostComment"), gson.toJson(comment));
     }
 }

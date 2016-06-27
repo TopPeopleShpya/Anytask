@@ -7,7 +7,6 @@ import com.company.anytask.models.User;
 
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 class CoursesApi extends BaseApi implements ICoursesApi {
