@@ -32,7 +32,7 @@ public class MyCoursesFragment extends Fragment {
             @Override
             public void onRefresh() {
                 courses = null;
-                getFillOrganizationCoursesTask(rootView).execute(Config.USER_ID);
+                getFillUserCoursesTask(rootView).execute(Config.USER_ID);
             }
         });
         rootView.post(new Runnable() {
@@ -40,13 +40,13 @@ public class MyCoursesFragment extends Fragment {
             public void run() {
                 if (courses == null)
                     rootView.setRefreshing(true);
-                getFillOrganizationCoursesTask(rootView).execute(Config.USER_ID);
+                getFillUserCoursesTask(rootView).execute(Config.USER_ID);
             }
         });
         return rootView;
     }
 
-    private FillUserCoursesTask getFillOrganizationCoursesTask(SwipeRefreshLayout rootView) {
+    private FillUserCoursesTask getFillUserCoursesTask(SwipeRefreshLayout rootView) {
         return new FillUserCoursesTask(this,
                 getFragmentManager(), new AnytaskApiClient(),
                 rootView);

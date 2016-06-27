@@ -40,6 +40,9 @@ public class FixedHeaderTableLayout extends RelativeLayout {
     private Integer[] horizontalHeadersWidth;
     private CellItem[] verticalHeaders;
 
+    private int itemMinHeight = 100;
+    private int itemMinWidth = 100;
+
     public FixedHeaderTableLayout(Context context, AttributeSet attributes) {
         super(context, attributes);
         this.context = context;
@@ -271,21 +274,24 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         }};
 
         TextView textView = new TextView(context);
-        textView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, CommentActivity.class)
-                        .putExtra("userId", item.userId)
-                        .putExtra("taskId", item.taskId)
-                        .putExtra(Intent.EXTRA_TEXT, item.text);
-                context.startActivity(intent);
-            }
-        });
-
+        if (item.taskId != 0) {
+            textView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CommentActivity.class)
+                            .putExtra("userId", item.userId)
+                            .putExtra("taskId", item.taskId)
+                            .putExtra(Intent.EXTRA_TEXT, item.text);
+                    context.startActivity(intent);
+                }
+            });
+        }
         textView.setBackgroundColor(colors.get(item.status));
         textView.setText(item.text);
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(5, 5, 5, 5);
+//        textView.setMinWidth(itemMinWidth);
+//        textView.setMinHeight(itemMinHeight);
         return textView;
     }
 
@@ -295,6 +301,8 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         headerTextView.setGravity(Gravity.CENTER);
         headerTextView.setPadding(5, 5, 5, 5);
         headerTextView.setBackgroundColor(Color.CYAN);
+        headerTextView.setMinWidth(item.status == Status.BLANK && item.text.isEmpty() ? itemMinWidth * 4 : itemMinWidth);
+//        headerTextView.setMinHeight(itemMinHeight);
         return headerTextView;
     }
 
