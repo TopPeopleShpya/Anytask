@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/swipe_refresh_tasks"
-        tools:context="com.company.anytask.TasksFragment">
+        tools:context=".fragments.TasksFragment">
 
     <ScrollView
             android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-            <com.company.anytask.FixedHeaderTableLayout
+            <com.company.anytask.custom_layouts.FixedHeaderTableLayout
                     android:id="@+id/table"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"/>

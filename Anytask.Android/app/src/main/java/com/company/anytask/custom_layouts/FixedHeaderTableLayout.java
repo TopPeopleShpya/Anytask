@@ -1,4 +1,4 @@
-package com.company.anytask;
+package com.company.anytask.custom_layouts;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 
+import com.company.anytask.activities.CommentActivity;
 import com.company.anytask.models.Status;
 
 import java.util.ArrayList;
@@ -316,9 +317,7 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         TableRow tableRow = fixedTopLeftHeight < horizontalHeaderHeight
                 ? fixedTopLeftTableRow
                 : horizontalHeaderTableRow;
-        int finalHeight = fixedTopLeftHeight > horizontalHeaderHeight
-                ? fixedTopLeftHeight
-                : horizontalHeaderHeight;
+        int finalHeight = Math.max(fixedTopLeftHeight, horizontalHeaderHeight);
 
         adjustLayoutHeight(tableRow, finalHeight);
     }
@@ -336,8 +335,8 @@ public class FixedHeaderTableLayout extends RelativeLayout {
             TableRow verticalHeaderTableRow = (TableRow) verticalHeadersTableLayout.getChildAt(i);
             TableRow contentTableRow = (TableRow) contentTableLayout.getChildAt(i);
 
-            int verticalHeaderTableRowHeight = getViewHeight(verticalHeaderTableRow);
-            int contentTableRowHeight = getViewHeight(contentTableRow);
+            int verticalHeaderTableRowHeight = getViewHeightForContent(verticalHeaderTableRow);
+            int contentTableRowHeight = getViewHeightForContent(contentTableRow);
 
             TableRow tableRow = verticalHeaderTableRowHeight < contentTableRowHeight
                     ? verticalHeaderTableRow
@@ -360,13 +359,18 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         }
     }
 
+    private int getViewHeightForContent(View view) {
+        view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.EXACTLY);
+        return view.getMeasuredHeight();
+    }
+
     private int getViewHeight(View view) {
-        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         return view.getMeasuredHeight();
     }
 
     private int getViewWidth(View view) {
-        view.measure(MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         return view.getMeasuredWidth();
     }
 

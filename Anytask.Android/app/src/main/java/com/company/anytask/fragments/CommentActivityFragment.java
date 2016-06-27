@@ -1,15 +1,16 @@
-package com.company.anytask;
+package com.company.anytask.fragments;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.company.anytask.R;
 import com.company.anytask.api.android.tasks.FillCommentsTask;
 import com.company.anytask.api.client.AnytaskApiClient;
+import com.company.anytask.custom_layouts.CellItem;
 import com.company.anytask.models.Status;
 
 /**

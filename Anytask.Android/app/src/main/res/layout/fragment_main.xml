@@ -4,7 +4,7 @@
         android:id="@+id/swipe_refresh_organizations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.company.anytask.MainFragment">
+        tools:context=".fragments.MainFragment">
 
     <ScrollView
             android:layout_width="match_parent"

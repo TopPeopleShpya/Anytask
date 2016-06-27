@@ -1,4 +1,4 @@
-package com.company.anytask;
+package com.company.anytask.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,11 +7,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.Parcel;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.widget.MultiAutoCompleteTextView;
-import android.widget.Toast;
+import com.company.anytask.R;
+import com.company.anytask.activities.CommentActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;

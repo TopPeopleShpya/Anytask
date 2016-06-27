@@ -1,4 +1,4 @@
-package com.company.anytask;
+package com.company.anytask.fragments;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.company.anytask.R;
 import com.company.anytask.api.android.tasks.FillCourseTasksTask;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Course;
 import com.company.anytask.models.Score;
 import com.company.anytask.models.Task;
 import com.company.anytask.models.User;
+import com.company.anytask.utils.GsonSingleton;
 
 import java.util.HashMap;
 import java.util.List;

@@ -4,7 +4,7 @@
     android:id="@+id/swipe_refresh_courses"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.company.anytask.MyCoursesFragment">
+    tools:context=".fragments.MyCoursesFragment">
 
     <ListView
         android:id="@+id/my_courses_list"

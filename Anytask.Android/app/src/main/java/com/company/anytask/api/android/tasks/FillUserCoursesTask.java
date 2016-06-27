@@ -8,13 +8,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.company.anytask.MyCoursesFragment;
+import com.company.anytask.fragments.MyCoursesFragment;
 import com.company.anytask.R;
-import com.company.anytask.TasksFragment;
+import com.company.anytask.fragments.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Course;
 import com.google.gson.Gson;

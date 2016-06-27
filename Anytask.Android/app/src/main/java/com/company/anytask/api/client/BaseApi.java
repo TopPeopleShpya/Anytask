@@ -1,8 +1,8 @@
 package com.company.anytask.api.client;
 
 import android.util.Log;
-import com.company.anytask.Config;
-import com.company.anytask.GsonSingleton;
+import com.company.anytask.utils.Config;
+import com.company.anytask.utils.GsonSingleton;
 import com.company.anytask.api.HttpStatusCode;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;

@@ -1,4 +1,4 @@
-package com.company.anytask;
+package com.company.anytask.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.company.anytask.*;
+import com.company.anytask.fragments.MainFragment;
+import com.company.anytask.fragments.MyCoursesFragment;
+import com.company.anytask.fragments.MyDeadlinesFragment;
+import com.company.anytask.fragments.TasksFragment;
+import com.company.anytask.services.NotificationService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

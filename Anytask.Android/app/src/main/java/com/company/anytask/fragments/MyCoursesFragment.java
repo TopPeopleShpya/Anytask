@@ -1,4 +1,4 @@
-package com.company.anytask;
+package com.company.anytask.fragments;
 
 
 import android.os.Bundle;
@@ -8,15 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.company.anytask.api.android.tasks.FillDeadlinesTask;
+import com.company.anytask.R;
+import com.company.anytask.api.android.tasks.FillUserCoursesTask;
 import com.company.anytask.api.client.AnytaskApiClient;
-import com.company.anytask.models.Task;
+import com.company.anytask.models.Course;
+import com.company.anytask.utils.Config;
 
 import java.util.List;
 
-public class MyDeadlinesFragment extends Fragment {
+public class MyCoursesFragment extends Fragment {
     private Bundle args;
-    private List<Task> tasks;
+    private List<Course> courses;
 
     @Override
     public void setArguments(Bundle args) {
@@ -31,32 +33,32 @@ public class MyDeadlinesFragment extends Fragment {
         rootView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                tasks = null;
-                getFillDeadlinesTask(rootView).execute(Config.USER_ID);
+                courses = null;
+                getFillUserCoursesTask(rootView).execute(Config.USER_ID);
             }
         });
         rootView.post(new Runnable() {
             @Override
             public void run() {
-                if (tasks == null)
+                if (courses == null)
                     rootView.setRefreshing(true);
-                getFillDeadlinesTask(rootView).execute(Config.USER_ID);
+                getFillUserCoursesTask(rootView).execute(Config.USER_ID);
             }
         });
         return rootView;
     }
 
-    private FillDeadlinesTask getFillDeadlinesTask(SwipeRefreshLayout rootView) {
-        return new FillDeadlinesTask(this,
+    private FillUserCoursesTask getFillUserCoursesTask(SwipeRefreshLayout rootView) {
+        return new FillUserCoursesTask(this,
                 getFragmentManager(), new AnytaskApiClient(),
                 rootView);
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public List<Course> getCourses() {
+        return courses;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }

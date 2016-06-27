@@ -1,4 +1,4 @@
-package com.company.anytask;
+package com.company.anytask.utils;
 
 public class Config {
     public static final String API_URL = "http://mock-anytask.azurewebsites.net/api";

@@ -10,13 +10,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.company.anytask.GsonSingleton;
-import com.company.anytask.MainFragment;
+import com.company.anytask.utils.GsonSingleton;
+import com.company.anytask.fragments.MainFragment;
 import com.company.anytask.R;
-import com.company.anytask.SchoolFragment;
+import com.company.anytask.fragments.SchoolFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Organization;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;

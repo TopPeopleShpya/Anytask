@@ -3,15 +3,13 @@ package com.company.anytask.api.android.tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.company.anytask.CellItem;
-import com.company.anytask.CommentActivityFragment;
+import com.company.anytask.custom_layouts.CellItem;
+import com.company.anytask.fragments.CommentActivityFragment;
 import com.company.anytask.R;
-import com.company.anytask.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
 import com.company.anytask.models.Comment;
 import com.company.anytask.models.Score;
