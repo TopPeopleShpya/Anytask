@@ -27,7 +27,7 @@ namespace Anytask.MockApi.Controllers
         } 
 
         // GET: api/Users/{id}/StudyingCourses
-        [Route("Users/{id:int}/StudyingCourses")]
+        [Route("Users/{id}/StudyingCourses")]
         [ResponseType(typeof(IQueryable<Course>))]
         public async Task<IHttpActionResult> GetCoursesStudyingByUser(string id)
         {
@@ -40,7 +40,7 @@ namespace Anytask.MockApi.Controllers
         }
 
         // GET: api/Users/{id}/TeachingCourses
-        [Route("Users/{id:int}/TeachingCourses")]
+        [Route("Users/{id}/TeachingCourses")]
         [ResponseType(typeof(IQueryable<Course>))]
         public async Task<IHttpActionResult> GetCoursesTeachedByUser(string id)
         {
