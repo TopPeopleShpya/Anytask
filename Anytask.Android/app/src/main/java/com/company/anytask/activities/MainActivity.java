@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         Fragment fragment = null;
-        Class fragmentClass = TasksFragment.class;
+        Class fragmentClass = MainFragment.class;
 
         switch (id) {
             case R.id.nav_main:
