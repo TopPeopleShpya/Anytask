@@ -19,6 +19,7 @@ import com.company.anytask.models.Task;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +65,8 @@ public class FillDeadlinesTask extends AsyncTask<String, Void, List<Task>> {
         List<HashMap<String, Object>> rows = new ArrayList<>();
 
         for (final Task task : tasks) {
+            if (task.deadline.getTime() < new Date().getTime())
+                continue;
             HashMap<String, Object> rowItem = new HashMap<String, Object>() {{
                 put("name", task.name);
                 put("course", task.course.name);

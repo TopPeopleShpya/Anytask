@@ -291,8 +291,8 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         textView.setText(item.text);
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(5, 5, 5, 5);
-//        textView.setMinWidth(itemMinWidth);
-//        textView.setMinHeight(itemMinHeight);
+        textView.setMinWidth(itemMinWidth);
+        textView.setMinHeight(itemMinHeight);
         return textView;
     }
 
@@ -303,7 +303,7 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         headerTextView.setPadding(5, 5, 5, 5);
         headerTextView.setBackgroundColor(Color.CYAN);
         headerTextView.setMinWidth(item.status == Status.BLANK && item.text.isEmpty() ? itemMinWidth * 4 : itemMinWidth);
-//        headerTextView.setMinHeight(itemMinHeight);
+        headerTextView.setMinHeight(itemMinHeight);
         return headerTextView;
     }
 
