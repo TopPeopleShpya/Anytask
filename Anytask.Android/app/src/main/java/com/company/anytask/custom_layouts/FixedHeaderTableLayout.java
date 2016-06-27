@@ -10,6 +10,7 @@ import android.widget.*;
 
 import com.company.anytask.activities.CommentActivity;
 import com.company.anytask.models.Status;
+import com.company.anytask.utils.Config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -275,7 +276,7 @@ public class FixedHeaderTableLayout extends RelativeLayout {
         }};
 
         TextView textView = new TextView(context);
-        if (item.taskId != 0) {
+        if (item.taskId != 0 && item.userId.equals(Config.USER_ID)) {
             textView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

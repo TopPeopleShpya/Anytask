@@ -43,6 +43,9 @@ public class FillCommentsTask extends AsyncTask<CellItem, Void, Score> {
 
     @Override
     protected void onPostExecute(Score score) {
+        if (score == null)
+            return;
+
         List<String> comments = new ArrayList<>();
         for (Comment comment : score.comments) {
             comments.add(comment.text);
