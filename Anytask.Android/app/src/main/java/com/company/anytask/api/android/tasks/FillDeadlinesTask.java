@@ -62,21 +62,22 @@ public class FillDeadlinesTask extends AsyncTask<String, Void, List<Task>> {
         final List<String> taskNames = new ArrayList<>();
         final ListView tasksListView = (ListView) rootView.findViewById(R.id.my_courses_list);
 
-        String[] from = new String[] { "name", "organization" };
-        int[] to = new int[] { R.id.list_item_course_name, R.id.list_item_course_organization };
+        String[] from = new String[] { "name", "course", "deadline" };
+        int[] to = new int[] { R.id.list_item_task_name, R.id.list_item_task_course, R.id.list_item_task_deadline };
 
         List<HashMap<String, Object>> rows = new ArrayList<>();
 
         for (final Task task : tasks) {
             HashMap<String, Object> rowItem = new HashMap<String, Object>() {{
                 put("name", task.name);
-                put("organization", task.course.name);
+                put("course", task.course.name);
+                put("deadline", task.deadline.toString());
             }};
             rows.add(rowItem);
             taskNames.add(task.name);
         }
 
-        SimpleAdapter adapter = new SimpleAdapter(context, rows, R.layout.list_item_my_course, from, to);
+        SimpleAdapter adapter = new SimpleAdapter(context, rows, R.layout.list_item_deadline, from, to);
         tasksListView.setAdapter(adapter);
 
         tasksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
