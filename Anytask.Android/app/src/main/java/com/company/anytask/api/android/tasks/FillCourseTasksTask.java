@@ -10,6 +10,7 @@ import com.company.anytask.custom_layouts.FixedHeaderTableLayout;
 import com.company.anytask.R;
 import com.company.anytask.fragments.TasksFragment;
 import com.company.anytask.api.client.AnytaskApiClient;
+import com.company.anytask.models.CourseTasks;
 import com.company.anytask.models.Score;
 import com.company.anytask.models.Task;
 import com.company.anytask.models.User;
@@ -46,11 +47,12 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
     @Override
     protected Void doInBackground(Integer... params) {
         courseId = params[0];
+        CourseTasks courseTasks = api.coursesApi().getCourseTasks(courseId);
         if (fragment.getTasks() == null) {
-            fragment.setTasks(api.coursesApi().getTasks(courseId));
+            fragment.setTasks(courseTasks.tasks);
         }
         if (fragment.getStudents() == null) {
-            fragment.setStudents(api.coursesApi().getStudents(courseId));
+            fragment.setStudents(courseTasks.students);
         }
         if (fragment.getTasks() != null && fragment.getStudents() != null) {
             if (fragment.getScores() == null) {
@@ -59,7 +61,7 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
                     scores.put(student, new HashMap<Task, Score>());
                     for (Task task : fragment.getTasks()) {
                         Log.i(TAG, "getting score for " + task.name + " and " + student.name);
-                        scores.get(student).put(task, api.scoresApi().getScore(student.id, task.id));
+                        scores.get(student).put(task, courseTasks.userTasks.get(student.id).get(task.id));
                     }
                 }
                 fragment.setScores(scores);

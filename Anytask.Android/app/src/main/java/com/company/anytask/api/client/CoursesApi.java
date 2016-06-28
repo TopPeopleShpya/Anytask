@@ -2,6 +2,7 @@ package com.company.anytask.api.client;
 
 import com.company.anytask.api.interfaces.ICoursesApi;
 import com.company.anytask.models.Course;
+import com.company.anytask.models.CourseTasks;
 import com.company.anytask.models.Task;
 import com.company.anytask.models.User;
 
@@ -38,6 +39,14 @@ class CoursesApi extends BaseApi implements ICoursesApi {
         return reader == null
                 ? null
                 : Arrays.asList(gson.fromJson(reader, Task[].class));
+    }
+
+    @Override
+    public CourseTasks getCourseTasks(int courseId) {
+        Reader reader = getUrl(combineUrls(url, courseId, "CourseTasks"));
+        return reader == null
+                ? null
+                : gson.fromJson(reader, CourseTasks.class);
     }
 
     @Override
