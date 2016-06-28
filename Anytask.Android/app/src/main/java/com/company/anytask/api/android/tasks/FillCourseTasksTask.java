@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.View;
+
 import com.company.anytask.custom_layouts.CellItem;
 import com.company.anytask.custom_layouts.FixedHeaderTableLayout;
 import com.company.anytask.R;
@@ -24,24 +26,18 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
     private TasksFragment fragment;
     private FragmentManager fragmentManager;
     private AnytaskApiClient api;
-    private SwipeRefreshLayout rootView;
+    private View rootView;
     private Integer courseId;
     private Context context;
 
     public FillCourseTasksTask(TasksFragment fragment,
                                FragmentManager fragmentManager, AnytaskApiClient api,
-                               SwipeRefreshLayout rootView) {
+                               View rootView) {
         this.fragment = fragment;
         this.fragmentManager = fragmentManager;
         this.api = api;
         context = fragment.getContext();
         this.rootView = rootView;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        if ((fragment.getScores() == fragment.getTasks()) == (fragment.getStudents() == null))
-            rootView.setRefreshing(true);
     }
 
     @Override
@@ -84,8 +80,6 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
         int tasksCount = tasks.size();
         int studentsCount = students.size();
         if (tasksCount == 0 && studentsCount == 0) {
-            if (rootView.isRefreshing())
-                rootView.setRefreshing(false);
             return;
         }
 
@@ -123,25 +117,5 @@ public class FillCourseTasksTask extends AsyncTask<Integer, Void, Void> {
         FixedHeaderTableLayout layout = (FixedHeaderTableLayout) rootView.findViewById(R.id.table);
 
         layout.setTableContent(horizontalHeaders, verticalHeaders, items);
-
-        //coursesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        //    @Override
-        //    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //        TasksFragment tasksFragment = new TasksFragment();
-        //        Task task = tasks.get(position);
-        //        Bundle bundle = new Bundle();
-        //        bundle.putString(context.getString(R.string.bundle_task), new Gson().toJson(task));
-        //        tasksFragment.setArguments(bundle);
-        //        fragmentManager
-        //                .beginTransaction()
-        //                .replace(R.id.content_frame, tasksFragment)
-        //                .addToBackStack(null)
-        //                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        //                .commit();
-        //    }
-        //});
-
-        if (rootView.isRefreshing())
-            rootView.setRefreshing(false);
     }
 }

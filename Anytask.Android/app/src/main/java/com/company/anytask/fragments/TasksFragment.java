@@ -37,17 +37,8 @@ public class TasksFragment extends Fragment {
         final Course course = GsonSingleton.getGson()
                 .fromJson(args.getString(getString(R.string.bundle_course)), Course.class);
 
-        final SwipeRefreshLayout rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_tasks, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_tasks, container, false);
         ((TextView) rootView.findViewById(R.id.course_name)).setText(course.name);
-
-        final SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                tasks = null;
-                getFillCourseTasksTask(rootView).execute(course.id);
-            }
-        };
-        rootView.setOnRefreshListener(onRefreshListener);
 
         rootView.post(new Runnable() {
             @Override
@@ -59,7 +50,7 @@ public class TasksFragment extends Fragment {
         return rootView;
     }
 
-    private FillCourseTasksTask getFillCourseTasksTask(SwipeRefreshLayout rootView) {
+    private FillCourseTasksTask getFillCourseTasksTask(View rootView) {
         return new FillCourseTasksTask(this, getFragmentManager(), new AnytaskApiClient(), rootView);
     }
 
