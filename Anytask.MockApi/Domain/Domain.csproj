@@ -90,6 +90,7 @@
     <Compile Include="Account\AccountViewModels.cs" />
     <Compile Include="Anytask\Comment.cs" />
     <Compile Include="Anytask\Course.cs" />
+    <Compile Include="Anytask\CourseTasks.cs" />
     <Compile Include="Anytask\Organization.cs" />
     <Compile Include="Anytask\Score.cs" />
     <Compile Include="Anytask\Status.cs" />
